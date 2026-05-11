@@ -11,16 +11,6 @@ export default function PricingPage() {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Placeholder for Domain Task 2 */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 min-h-[400px] flex flex-col">
-          <h2 className="text-xl font-semibold mb-4 text-slate-700">
-            Price Sensitivity by Area (Task 2)
-          </h2>
-          <div className="flex-1 bg-slate-50 border border-dashed border-slate-200 rounded-lg flex items-center justify-center text-slate-400">
-            [D3.js Line/Scatter Chart Wrapper Here]
-          </div>
-        </div>
-
         {/* Placeholder for Domain Task 6 */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 min-h-[400px] flex flex-col">
           <h2 className="text-xl font-semibold mb-4 text-slate-700">
