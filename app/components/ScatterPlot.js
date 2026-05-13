@@ -82,16 +82,106 @@ export default function ScatterPlot() {
           .range([height, 0]);
 
         const xAxis = d3.axisBottom(x).ticks(8);
-        const yAxis = d3
-          .axisLeft(y)
-          .ticks(8)
-          .tickFormat((d) => formatRev(d));
+        const yAxis = d3.axisLeft(y).ticks(8).tickFormat((d) => formatRev(d));
+
+        const xAxisG = svg
+          .append('g')
+          .attr('class', 'axis axis-x')
+          .attr('transform', `translate(0,${height})`);
+
+        const yAxisG = svg.append('g').attr('class', 'axis axis-y');
+
+        const gridX = svg
+          .append('g')
+          .attr('class', 'grid grid-x')
+          .attr('transform', `translate(0,${height})`);
+
+        const gridY = svg.append('g').attr('class', 'grid grid-y');
+
+        const plotArea = svg.append('g').attr('class', 'plot-area');
+
+        const pointsLayer = plotArea.append('g').attr('class', 'points-layer');
+
+        const zoom = d3
+          .zoom()
+          .scaleExtent([1, 7])
+          .extent([
+            [0, 0],
+            [width, height],
+          ])
+          .translateExtent([
+            [0, 0],
+            [width, height],
+          ])
+          .on('zoom', (event) => {
+            const transform = event.transform;
+            const zx = transform.rescaleX(x);
+            const zy = transform.rescaleY(y);
+
+            gridX.call(
+              d3
+                .axisBottom(zx)
+                .ticks(8)
+                .tickSize(-height)
+                .tickFormat('')
+            );
+
+            gridY.call(
+              d3
+                .axisLeft(zy)
+                .ticks(8)
+                .tickSize(-width)
+                .tickFormat('')
+            );
+
+            xAxisG.call(d3.axisBottom(zx).ticks(8));
+            yAxisG.call(d3.axisLeft(zy).ticks(8).tickFormat((d) => formatRev(d)));
+
+            xAxisG.selectAll('text').style('fill', '#111827').style('font-size', '12px');
+            yAxisG.selectAll('text').style('fill', '#111827').style('font-size', '12px');
+
+            pointsLayer.selectAll('circle').attr('cx', (d) => zx(d.avgOccupancy)).attr('cy', (d) => zy(d.avgRevenue));
+          });
+
+        const zoomToPoint = (d) => {
+          const targetScale = 3.2;
+          const xCenter = width / 2;
+          const yCenter = height / 2;
+          const xPoint = x(d.avgOccupancy);
+          const yPoint = y(d.avgRevenue);
+
+          const transform = d3.zoomIdentity
+            .translate(xCenter, yCenter)
+            .scale(targetScale)
+            .translate(-xPoint, -yPoint);
+
+          svgElement
+            .transition()
+            .duration(750)
+            .ease(d3.easeCubicOut)
+            .call(zoom.transform, transform);
+        };
+
+        const resetZoom = () => {
+          svgElement
+            .transition()
+            .duration(650)
+            .ease(d3.easeCubicOut)
+            .call(zoom.transform, d3.zoomIdentity);
+        };
+
+        const svgElement = d3.select(chartRef.current).select('svg');
+
+        svgElement.call(zoom).on('click', (event) => {
+          if (event.target.tagName === 'circle') {
+            return;
+          }
+
+          resetZoom();
+        });
 
         // Grid
-        svg
-          .append('g')
-          .attr('class', 'grid')
-          .attr('transform', `translate(0,${height})`)
+        gridX
           .call(
             d3
               .axisBottom(x)
@@ -102,9 +192,7 @@ export default function ScatterPlot() {
           .style('stroke', '#e5e7eb')
           .style('stroke-dasharray', '3 3');
 
-        svg
-          .append('g')
-          .attr('class', 'grid')
+        gridY
           .call(
             d3
               .axisLeft(y)
@@ -116,20 +204,13 @@ export default function ScatterPlot() {
           .style('stroke-dasharray', '3 3');
 
         // Axes
-        svg
-          .append('g')
-          .attr('class', 'axis')
-          .attr('transform', `translate(0,${height})`)
-          .call(xAxis)
+        xAxisG.call(xAxis)
           .style('stroke', '#4b5563')
           .selectAll('text')
           .style('fill', '#111827')
           .style('font-size', '12px');
 
-        svg
-          .append('g')
-          .attr('class', 'axis')
-          .call(yAxis)
+        yAxisG.call(yAxis)
           .style('stroke', '#4b5563')
           .selectAll('text')
           .style('fill', '#111827')
@@ -160,8 +241,7 @@ export default function ScatterPlot() {
           .text('AVG(Estimated Revenue L365D)');
 
         // Points
-        svg
-          .append('g')
+        pointsLayer
           .selectAll('circle')
           .data(data)
           .join('circle')
@@ -179,7 +259,7 @@ export default function ScatterPlot() {
               .style('opacity', 1)
               .html(`
                 <div style="display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: baseline; margin-bottom: 8px;">
-                  <span style="color: #6b7280; font-size: 14px;">Neighbourhood:</span>
+                  <span style="color: #6b7280; font-size: 14px;">Neighbourhood cleansed:</span>
                   <span style="color: #111827; font-size: 14px; font-weight: 700;">${d.neighbourhood}</span>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: baseline; margin-bottom: 8px;">
@@ -215,6 +295,10 @@ export default function ScatterPlot() {
           })
           .on('mouseleave', () => {
             tooltip.style('opacity', 0);
+          })
+          .on('click', (event, d) => {
+            event.stopPropagation();
+            zoomToPoint(d);
           });
       })
       .catch((err) => {

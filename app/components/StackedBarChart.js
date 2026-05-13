@@ -42,8 +42,16 @@ export default function StackedBarChart() {
       { label: 'False', color: '#3B82F6' },
     ];
 
+    const legendItemNodes = new Map();
+
     legendItems.forEach((item) => {
-      const itemRow = legend.append('div').style('display', 'flex').style('align-items', 'center').style('gap', '8px');
+      const itemRow = legend
+        .append('div')
+        .style('display', 'flex')
+        .style('align-items', 'center')
+        .style('gap', '8px')
+        .style('cursor', 'pointer')
+        .style('transition', 'opacity 160ms ease, transform 160ms ease');
 
       itemRow
         .append('span')
@@ -53,6 +61,8 @@ export default function StackedBarChart() {
         .style('background', item.color);
 
       itemRow.append('span').text(item.label);
+
+      legendItemNodes.set(item.label.toLowerCase(), itemRow);
     });
 
     const tooltip = root
@@ -79,6 +89,51 @@ export default function StackedBarChart() {
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
     const formatOcc = d3.format('.2f');
+    let selectedKey = null;
+    let barSelection = null;
+
+    const updateBarStyles = () => {
+      if (!barSelection) {
+        return;
+      }
+
+      barSelection
+        .style('opacity', function () {
+          const key = d3.select(this.parentNode).datum().key;
+
+          if (!selectedKey) {
+            return 1;
+          }
+
+          return key === selectedKey ? 1 : 0.24;
+        })
+        .style('stroke', function () {
+          const key = d3.select(this.parentNode).datum().key;
+          return key === selectedKey ? '#0f172a' : 'none';
+        })
+        .style('stroke-width', function () {
+          const key = d3.select(this.parentNode).datum().key;
+          return key === selectedKey ? 2 : 0;
+        })
+        .style('filter', function () {
+          const key = d3.select(this.parentNode).datum().key;
+          return key === selectedKey ? 'drop-shadow(0 4px 10px rgba(15, 23, 42, 0.18))' : 'none';
+        });
+    };
+
+    const updateLegendStyles = () => {
+      legendItemNodes.forEach((itemNode, key) => {
+        itemNode
+          .style('opacity', !selectedKey || selectedKey === key ? 1 : 0.38)
+          .style('transform', selectedKey === key ? 'translateY(-1px)' : 'translateY(0)');
+      });
+    };
+
+    const setSelection = (nextKey) => {
+      selectedKey = nextKey;
+      updateBarStyles();
+      updateLegendStyles();
+    };
 
     d3.csv('/data/listings.csv')
       .then((raw) => {
@@ -129,6 +184,84 @@ export default function StackedBarChart() {
         const stack = d3.stack().keys(['false', 'true']);
         const stackedData = stack(processedData);
 
+        barSelection = svg
+          .append('g')
+          .selectAll('g')
+          .data(stackedData)
+          .join('g')
+          .attr('fill', (d) => colorScale(d.key))
+          .selectAll('rect')
+          .data((d) => d)
+          .join('rect')
+          .attr('x', (d) => xScale(d.data.room_type))
+          .attr('y', (d) => yScale(d[1]))
+          .attr('height', (d) => yScale(d[0]) - yScale(d[1]))
+          .attr('width', xScale.bandwidth())
+          .attr('rx', 2)
+          .style('cursor', 'pointer')
+          .on('mouseenter', (event, d) => {
+            const key = d3.select(event.currentTarget.parentNode).datum().key;
+            const label = key === 'true' ? 'True' : 'False';
+            const value = d[1] - d[0];
+
+            tooltip
+              .style('opacity', 1)
+              .html(`
+                <div><strong>Instant Bookable:</strong> ${label}</div>
+                <div><strong>Room Type:</strong> ${d.data.room_type}</div>
+                <div><strong>Avg. Estimated Occupancy L365D:</strong> ${formatOcc(value)}</div>
+              `);
+
+            tooltip
+              .style('left', `${event.offsetX + 16}px`)
+              .style('top', `${event.offsetY + 16}px`);
+          })
+          .on('mousemove', (event) => {
+            tooltip
+              .style('left', `${event.offsetX + 16}px`)
+              .style('top', `${event.offsetY + 16}px`);
+          })
+          .on('mouseleave', () => {
+            tooltip.style('opacity', 0);
+          })
+          .on('click', (event, d) => {
+            event.stopPropagation();
+            const key = d3.select(event.currentTarget.parentNode).datum().key;
+            const label = key === 'true' ? 'True' : 'False';
+            const value = d[1] - d[0];
+
+            setSelection(selectedKey === key ? null : key);
+
+            tooltip
+              .style('opacity', 1)
+              .html(`
+                <div><strong>Instant Bookable:</strong> ${label}</div>
+                <div><strong>Room Type:</strong> ${d.data.room_type}</div>
+                <div><strong>Avg. Estimated Occupancy L365D:</strong> ${formatOcc(value)}</div>
+              `);
+
+            tooltip
+              .style('left', `${event.offsetX + 16}px`)
+              .style('top', `${event.offsetY + 16}px`);
+          });
+
+        svg.on('click', () => {
+          if (!selectedKey) {
+            return;
+          }
+
+          selectedKey = null;
+          updateBarStyles();
+          updateLegendStyles();
+          tooltip.style('opacity', 0);
+        });
+
+        legendItemNodes.forEach((itemNode, key) => {
+          itemNode.on('click', () => {
+            setSelection(selectedKey === key ? null : key);
+          });
+        });
+
         svg
           .append('g')
           .attr('transform', `translate(0,${height})`)
@@ -168,45 +301,8 @@ export default function StackedBarChart() {
           .style('fill', '#111827')
           .text('AVG(Estimated Occupancy L365D)');
 
-        svg
-          .append('g')
-          .selectAll('g')
-          .data(stackedData)
-          .join('g')
-          .attr('fill', (d) => colorScale(d.key))
-          .selectAll('rect')
-          .data((d) => d)
-          .join('rect')
-          .attr('x', (d) => xScale(d.data.room_type))
-          .attr('y', (d) => yScale(d[1]))
-          .attr('height', (d) => yScale(d[0]) - yScale(d[1]))
-          .attr('width', xScale.bandwidth())
-          .attr('rx', 2)
-          .on('mouseenter', (event, d) => {
-            const key = d3.select(event.currentTarget.parentNode).datum().key;
-            const label = key === 'true' ? 'True' : 'False';
-            const value = d[1] - d[0];
-
-            tooltip
-              .style('opacity', 1)
-              .html(`
-                <div><strong>Instant Bookable:</strong> ${label}</div>
-                <div><strong>Room Type:</strong> ${d.data.room_type}</div>
-                <div><strong>Avg. Estimated Occupancy L365D:</strong> ${formatOcc(value)}</div>
-              `);
-
-            tooltip
-              .style('left', `${event.offsetX + 16}px`)
-              .style('top', `${event.offsetY + 16}px`);
-          })
-          .on('mousemove', (event) => {
-            tooltip
-              .style('left', `${event.offsetX + 16}px`)
-              .style('top', `${event.offsetY + 16}px`);
-          })
-          .on('mouseleave', () => {
-            tooltip.style('opacity', 0);
-          });
+        updateBarStyles();
+        updateLegendStyles();
 
         svg
           .append('g')
