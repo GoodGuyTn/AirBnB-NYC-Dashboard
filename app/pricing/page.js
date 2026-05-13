@@ -1,3 +1,7 @@
+'use client';
+
+import ScatterPlot from '../components/ScatterPlot';
+
 export default function PricingPage() {
   return (
     <div className="p-8">
@@ -24,10 +28,10 @@ export default function PricingPage() {
         {/* Placeholder for Domain Task 8 */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 min-h-[400px] flex flex-col lg:col-span-2">
           <h2 className="text-xl font-semibold mb-4 text-slate-700">
-            Value for Money by Room Type (Task 8)
+            Revenue vs Occupancy by District (Task 8)
           </h2>
-          <div className="flex-1 bg-slate-50 border border-dashed border-slate-200 rounded-lg flex items-center justify-center text-slate-400">
-            [D3.js Grouped Bar Chart Wrapper Here]
+          <div className="flex-1 flex items-center justify-center">
+            <ScatterPlot />
           </div>
         </div>
       </div>
