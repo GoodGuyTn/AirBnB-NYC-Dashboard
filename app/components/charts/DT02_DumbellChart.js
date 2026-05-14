@@ -131,7 +131,13 @@ function DumbbellSVG({ data, xValue1, xValue2, xFormat }) {
      });
 
     const rows = g.selectAll(".row").data(data).enter().append("g");
-
+     g.append('g')
+  .attr('class', 'grid')
+  .call(d3.axisBottom(x).ticks(4).tickSize(height).tickFormat(''))
+  .call(ax => ax.select('.domain').remove())
+  .call(ax => ax.selectAll('line')
+    .attr('stroke', '#e2e8f0')
+    .attr('stroke-dasharray', '3,3'));
     // Đường kẻ ngang mờ làm nền (Guide lines)
     rows.append("line")
         .attr("x1", -margin.left).attr("x2", chartWidth + margin.right)
@@ -151,22 +157,70 @@ function DumbbellSVG({ data, xValue1, xValue2, xFormat }) {
     rows.append("circle")
         .attr("cx", d => x(xValue2(d))).attr("cy", d => y(d.name) + y.bandwidth()/2)
         .attr("r", 5).attr("fill", SUPERHOST_COLOR).attr("stroke", "white").attr("stroke-width", 1);
+     const tip = d3.select('body').select('.db-tip').empty()
+  ? d3.select('body').append('div').attr('class', 'db-tip')
+      .style('position', 'fixed').style('pointer-events', 'none')
+      .style('background', 'white').style('border', '1px solid #e2e8f0')
+      .style('border-radius', '8px').style('padding', '8px 12px')
+      .style('font-size', '12px').style('color', '#0f172a')
+      .style('box-shadow', '0 4px 12px rgba(0,0,0,0.1)')
+      .style('opacity', 0).style('z-index', 50)
+      : d3.select('body').select('.db-tip');
+    rows.append("circle").attr('class', 'non')
+    .attr("cx", d => x(xValue1(d))).attr("cy", d => y(d.name) + y.bandwidth()/2)
+    .attr("r", 5).attr("fill", NONSUPERHOST_COLOR).attr("stroke", "white")
+    .attr("stroke", "#000")          // Màu đen
+    .attr("stroke-opacity", 0.5)     // Độ trong suốt của viền (50%)
+    .attr("stroke-width", 1)  
+    .attr("fill-opacity", 0.5)
+    .on('mouseover', (e, d) => {
+      d3.select(this).raise(); // <--- KHẮC PHỤC ĐÈ NHAU: Mang chấm này lên trên cùng
+      d3.select(this).attr("fill-opacity", 1).attr("r", 8);
+      tip.style('opacity', 1)
+        .html(`<b>${d.name}</b><br><span style="color:#f43f5e">Non-Superhost:</span> ${xFormat(xValue1(d))}`)
+        .style('left', e.clientX + 14 + 'px').style('top', e.clientY - 8 + 'px');
+    })
+    .on('mousemove', e => tip.style('left', e.clientX + 14 + 'px').style('top', e.clientY - 8 + 'px'))
+    .on('mouseout', () => tip.style('opacity', 0));
 
+// Circle Superhost
+    rows.append("circle").attr('class', 'sup')
+    .attr("cx", d => x(xValue2(d))).attr("cy", d => y(d.name) + y.bandwidth()/2)
+    .attr("r", 5).attr("fill", SUPERHOST_COLOR).attr("stroke", "white")
+    .attr("fill-opacity", 0.5)
+    .attr("stroke", "#000")         
+    .attr("stroke-opacity", 0.5)     
+    .attr("stroke-width", 1)  
+    .on('mouseover', (e, d) => {
+      d3.select(this).raise(); 
+      d3.select(this).attr("fill-opacity", 1).attr("r", 8);
+      tip.style('opacity', 1)
+        .html(`<b>${d.name}</b><br><span style="color:#0ea5e9">Superhost:</span> ${xFormat(xValue2(d))}`)
+        .style('left', e.clientX + 14 + 'px').style('top', e.clientY - 8 + 'px');
+    })
+    .on('mousemove', e => tip.style('left', e.clientX + 14 + 'px').style('top', e.clientY - 8 + 'px'))
+    .on('mouseout', () => tip.style('opacity', 0));
     // Con số chênh lệch (Gap) - Giới hạn không cho tràn lề phải
     rows.append("text")
         .attr("x", d => Math.min(x(Math.max(xValue1(d), xValue2(d))) + 8, chartWidth + 5))
         .attr("y", d => y(d.name) + y.bandwidth()/2 + 4)
         .style("fill", "#64748b").style("font-size", "9px").style("font-weight", "800")
-        .text(d => {
-            const gap = xValue2(d) - xValue1(d);
-            return (gap >= 0 ? "+" : "") + xFormat(gap);
-        });
+        .text(d => xFormat(Math.abs(xValue2(d) - xValue1(d))));
 
     // Trục X (Nhãn giá/rating)
-    g.append("g").attr("transform", `translate(0, ${height})`)
-     .call(d3.axisBottom(x).ticks(3).tickFormat(xFormat))
-     .call(g => g.select(".domain").attr("stroke", "rgba(255,255,255,0.1)"))
-     .selectAll("text").style("fill", "#475569").style("font-size", "9px");
+    g.append('g')
+  .attr('class', 'grid')
+  .call(d3.axisBottom(x).ticks(4).tickSize(height).tickFormat(''))
+  .call(ax => ax.select('.domain').remove())
+  .call(ax => ax.selectAll('line')
+    .attr('stroke', '#e2e8f0')
+    .attr('stroke-dasharray', '3,3'));
+
+// Sửa domain trục X cho rõ hơn:
+g.append("g").attr("transform", `translate(0, ${height})`)
+  .call(d3.axisBottom(x).ticks(4).tickFormat(xFormat))  // tăng ticks từ 3 lên 4
+  .call(g => g.select(".domain").attr("stroke", "#e2e8f0"))  // sửa màu domain
+  .selectAll("text").style("fill", "#475569").style("font-size", "9px");
 
   }, [data, xValue1, xValue2]);
 
