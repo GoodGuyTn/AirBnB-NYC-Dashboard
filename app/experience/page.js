@@ -38,10 +38,10 @@ export default function ExperiencePage() {
         </div>
 
         {/* TASK 7 PLACEHOLDER - CHIẾM 50% CÒN LẠI */}
-        <div className="bg-white p-6 rounded-xl border border-slate-100 flex flex-col opacity-30">
-          <h2 className="text-sm font-black text-slate-400 mb-6 uppercase italic">Leniency Analysis (Task 7)</h2>
+        <div className="bg-white p-6 rounded-xl border border-slate-100 flex flex-col opacity-60">
+          <h2 className="text-sm font-black text-slate-400 mb-6 uppercase italic">03. Radar chart đã chuyển sang Preview (Task 7)</h2>
           <div className="flex-1 border border-dashed border-white/10 rounded-lg flex items-center justify-center text-slate-600">
-             [Radar Chart]
+            Biểu đồ radar so sánh đánh giá giữa Manhattan và Staten Island hiện nằm trong trang Preview.
           </div>
         </div>
       </div>
