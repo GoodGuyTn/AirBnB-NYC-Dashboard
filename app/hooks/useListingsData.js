@@ -7,6 +7,7 @@ function parseRow(d) {
     id: d.id,
     borough: d.neighbourhood_group_cleansed || 'Other',
     neighbourhood: d.neighbourhood_cleansed || d.neighbourhood_group_cleansed || 'Other',
+    room_type: d.room_type || 'Unknown',
     bedrooms: +d.bedrooms || 0,
     bathrooms: d.bathrooms_text?.toLowerCase().includes('half')
       ? 0.5
