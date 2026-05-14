@@ -1,10 +1,11 @@
-"use client";
+'use client';
 
-import { useListingsData } from "@/hooks/useListingsData";
-import DumbbellChart from "../components/charts/DT02_DumbellChart";
+import { useListingsData } from '@/hooks/useListingsData';
+import HostReputationChart from '../components/charts/DT02_HostReputationChart';
+import HostProfessionalismChart from '../components/charts/DT03_HostProfessionalismChart';
 
 export default function HostsPage() {
-  const { allData, rawData, loading } = useListingsData();
+  const { rawData, loading } = useListingsData();
 
   if (loading) return (
     <div className="p-8 flex flex-col items-center justify-center min-h-[50vh]">
@@ -14,49 +15,48 @@ export default function HostsPage() {
   );
 
   return (
-    <div className="p-8 space-y-10">
-      <header>
-        <h1 className="text-3xl font-bold text-slate-800 tracking-tight">
-          Host Performance Analysis
+    <div className="p-8 bg-slate-50 min-h-screen flex flex-col gap-8">
+      <header className="border-b border-slate-200 pb-6 bg-white p-6 rounded-2xl shadow-sm">
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+          HOST PERFORMANCE
         </h1>
-        <p className="text-slate-500 mt-2">
-          Đánh giá sự uy tín và hiệu quả kinh doanh giữa các nhóm Host (Superhost vs Regular).
+        <p className="text-slate-500 text-sm mt-1 font-medium">
+          Đánh giá uy tín và mức độ chuyên nghiệp của chủ nhà Airbnb tại NYC.
         </p>
       </header>
-      <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-slate-700 flex items-center gap-2">
-            <span className="w-1.5 h-6 bg-sky-500 rounded-full"></span>
-            Superhost - Host
-          </h2>
-        </div>
 
-        <div className="min-h-[400px]">
-          <DumbbellChart data={rawData} />
-        </div>
-      </section>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-        {/* Placeholder for Domain Task 3 */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 min-h-[400px] flex flex-col opacity-50">
-          <h2 className="text-lg font-semibold mb-4 text-slate-700">
-            Reviews vs Ratings (Task 3)
-          </h2>
-          <div className="flex-1 bg-slate-50 border border-dashed border-slate-200 rounded-lg flex items-center justify-center text-slate-400 italic">
-            [D3.js Scatter Plot của thành viên khác]
+      <div className="grid grid-cols-1 gap-8">
+        {/* Domain Task 3: Host Reputation */}
+        <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md transition-shadow">
+          <div className="mb-4">
+            <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
+              <span className="w-1.5 h-4 bg-blue-500 rounded-full" />
+              3. Phân tích uy tín chủ nhà
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Mối quan hệ giữa số lượng đánh giá và điểm xếp hạng (Scatter Plot)
+            </p>
           </div>
-        </div>
-
-        {/* Placeholder for Domain Task 4 */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 min-h-[400px] flex flex-col opacity-50">
-          <h2 className="text-lg font-semibold mb-4 text-slate-700">
-            Host Listings vs Response Time (Task 4)
-          </h2>
-          <div className="flex-1 bg-slate-50 border border-dashed border-slate-200 rounded-lg flex items-center justify-center text-slate-400 italic">
-            [D3.js Bar/Box Plot của thành viên khác]
+          <div className="min-h-[420px]">
+            <HostReputationChart data={rawData} />
           </div>
-        </div>
+        </section>
+
+        {/* Domain Task 4: Host Professionalism */}
+        <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md transition-shadow">
+          <div className="mb-4">
+            <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
+              <span className="w-1.5 h-4 bg-indigo-500 rounded-full" />
+              4. Mức độ chuyên nghiệp của chủ nhà
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Mối quan hệ giữa thời gian phản hồi và số lượng tài sản quản lý (Bar Chart)
+            </p>
+          </div>
+          <div className="min-h-[420px]">
+            <HostProfessionalismChart data={rawData} />
+          </div>
+        </section>
       </div>
     </div>
   );

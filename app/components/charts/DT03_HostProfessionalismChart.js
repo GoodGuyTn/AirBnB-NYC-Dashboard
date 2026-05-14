@@ -1,15 +1,36 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as d3 from 'd3';
 
 export default function DT03_HostProfessionalismChart({ data }) {
   const svgRef = useRef(null);
 
-  useEffect(() => {
-    if (!data || data.length === 0) return;
+  // Aggregate raw listing data → grouped by host_response_time
+  const aggregatedData = useMemo(() => {
+    if (!data || data.length === 0) return [];
+    const grouped = {};
+    data.forEach((row) => {
+      const rt = row.host_response_time || 'Unknown';
+      const lc = row.host_listings_count || 0;
+      if (!grouped[rt]) grouped[rt] = { totalListings: 0, hostCount: 0 };
+      grouped[rt].totalListings += lc;
+      grouped[rt].hostCount += 1;
+    });
+    const order = { 'within an hour': 1, 'within a few hours': 2, 'within a day': 3, 'a few days or more': 4, 'Unknown': 5 };
+    return Object.entries(grouped)
+      .map(([rt, g]) => ({
+        host_response_time: rt,
+        avg_listings_count: parseFloat((g.totalListings / g.hostCount).toFixed(2)),
+        host_count: g.hostCount,
+      }))
+      .sort((a, b) => (order[a.host_response_time] || 99) - (order[b.host_response_time] || 99));
+  }, [data]);
 
-    const sortedData = [...data].sort(
+  useEffect(() => {
+    if (aggregatedData.length === 0) return;
+
+    const sortedData = [...aggregatedData].sort(
       (a, b) => b.avg_listings_count - a.avg_listings_count
     );
 
@@ -184,7 +205,7 @@ export default function DT03_HostProfessionalismChart({ data }) {
       .style('font-size', '11px')
       .style('fill', '#374151')
       .text('Avg Host Listings');
-  }, [data]);
+  }, [aggregatedData]);
 
   return <svg ref={svgRef} />;
 }

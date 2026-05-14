@@ -11,17 +11,19 @@ function parseRow(d) {
 
   return {
     id: d.id,
+    host_id: parseInt(d.host_id) || 0,
+    host_name: d.host_name || 'Unknown',
     borough: d.neighbourhood_group_cleansed || 'Other',
     neighbourhood: d.neighbourhood_cleansed || d.neighbourhood_group_cleansed || 'Other',
     room_type: d.room_type || 'Unknown',
     bedrooms: bedCount,
     bathrooms: bathCount,
-    // BƯỚC 2: Sử dụng biến tạm đã khai báo
     bedrooms_grouped: bedCount >= 4 ? '4+' : bedCount.toString(),
     bathrooms_grouped: bathCount >= 3 ? '3+' : bathCount.toString(),
     minimum_nights: +d.minimum_nights || 1,
     accommodates: +d.accommodates || 0,
     price: !d.price ? 0 : parseFloat(d.price.replace(/[$,\s]/g, '')),
+    number_of_reviews: parseInt(d.number_of_reviews) || 0,
     review_scores_rating: parseFloat(d.review_scores_rating) || null,
     review_scores_accuracy: parseFloat(d.review_scores_accuracy) || null,
     review_scores_cleanliness: parseFloat(d.review_scores_cleanliness) || null,
@@ -31,6 +33,8 @@ function parseRow(d) {
     review_scores_value: parseFloat(d.review_scores_value) || null,
     rating: parseFloat(d.review_scores_rating) || null,
     superhost: ['t', 'true', 'TRUE', 'True'].includes(String(d.host_is_superhost).trim()),
+    host_response_time: d.host_response_time || 'Unknown',
+    host_listings_count: parseFloat(d.host_listings_count) || 0,
   };
 }
 

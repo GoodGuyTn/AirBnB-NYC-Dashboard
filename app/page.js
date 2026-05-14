@@ -2,7 +2,8 @@
 import { useListingsData } from '@/hooks/useListingsData';
 import GroupedViolinPlot from './components/charts/DT10_GroupedViolinPlot';
 import BubbleMatrix from './components/charts/DT11_BubbleMatrix';
-import StackedBarChart from './components/StackedBarChart';
+import ScatterPlot from './components/charts/DT08_ScatterPlot';
+import StackedBarChart from './components/charts/DT09_StackedBarChart';
 
 export default function OverviewPage() {
   const { rawData, loading } = useListingsData();
@@ -35,7 +36,7 @@ export default function OverviewPage() {
         </div>
       </header>
 
-      {/* Dành không gian phía trên cho 2 biểu đồ phân tích thị trường trọng tâm DT10 & DT11 */}
+      {/* Task 10 & Task 11 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Domain Task 10 */}
         <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col hover:shadow-md transition-shadow">
@@ -82,33 +83,39 @@ export default function OverviewPage() {
         </section>
       </div>
 
-      {/* Hàng dưới cho các Domain Task còn lại (8 & 9) */}
+      {/* Task 8 & Task 9 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Placeholder for Domain Task 8 */}
-        <div className="bg-white/60 p-6 rounded-2xl border border-slate-200 flex flex-col opacity-60">
-          <h2 className="text-sm font-bold text-slate-600 mb-2 uppercase tracking-wide">
-            Gold Mine vs Trap: Occupancy & Revenue (Task 8)
-          </h2>
-          <div className="h-[200px] bg-slate-100/50 border border-dashed border-slate-300 rounded-xl flex items-center justify-center text-xs text-slate-400 font-mono">
-            [Scatter Plot Component Placeholder]
+        {/* Domain Task 8 */}
+        <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col hover:shadow-md transition-shadow">
+          <div className="mb-4">
+            <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
+              <span className="w-1.5 h-4 bg-rose-500 rounded-full" />
+              8. Revenue vs Occupancy by District
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Gold Mine vs Trap: Phân tích hiệu quả đầu tư theo khu vực (Scatter Plot)
+            </p>
           </div>
-        </div>
+          <div className="flex-1 min-h-[420px] flex flex-col justify-center">
+            <ScatterPlot />
+          </div>
+        </section>
 
-        {/* Placeholder for Domain Task 9 */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+        {/* Domain Task 9 */}
+        <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col hover:shadow-md transition-shadow">
           <div className="mb-4">
             <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
               <span className="w-1.5 h-4 bg-emerald-500 rounded-full" />
               9. Instant Bookable Impact on Occupancy
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              Instant Book vs Manual Approval
+              Instant Book vs Manual Approval (Stacked Bar Chart)
             </p>
           </div>
-          <div className="flex-1 flex items-center justify-center min-h-[400px]">
+          <div className="flex-1 min-h-[420px] flex flex-col justify-center">
             <StackedBarChart />
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

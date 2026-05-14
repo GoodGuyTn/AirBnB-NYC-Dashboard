@@ -1,59 +1,62 @@
 'use client';
 
-import ScatterPlot from '../components/ScatterPlot';
+import { useListingsData } from '@/hooks/useListingsData';
+import DumbbellChart from '../components/charts/DT02_DumbellChart';
+import RoomTypeBoroughPriceChart from '../components/charts/DT05_RoomTypeBoroughPrice';
 
 export default function PricingPage() {
+  const { rawData, loading } = useListingsData();
+
+  if (loading) return (
+    <div className="p-8 flex flex-col items-center justify-center min-h-[50vh]">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <p className="mt-4 text-slate-500 font-mono">Đang tải dữ liệu Pricing...</p>
+    </div>
+  );
+
   return (
-    <div className="p-8">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800">
-          Pricing Strategy
+    <div className="p-8 bg-slate-50 min-h-screen flex flex-col gap-8">
+      <header className="border-b border-slate-200 pb-6 bg-white p-6 rounded-2xl shadow-sm">
+        <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+          PRICING & VALUE
         </h1>
-        <p className="text-slate-500 mt-2">
+        <p className="text-slate-500 text-sm mt-1 font-medium">
           Phân tích các yếu tố cấu thành giá và so sánh chiến lược định giá.
         </p>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Placeholder for Domain Task 2 */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 min-h-[400px] flex flex-col">
-          <h2 className="text-xl font-semibold mb-4 text-slate-700">
-            Superhost vs Non-Superhost Premium (Task 2)
-          </h2>
-          <div className="flex-1 bg-slate-50 border border-dashed border-slate-200 rounded-lg flex items-center justify-center text-slate-400">
-            [D3.js Line/Bar Chart Wrapper Here]
+      <div className="grid grid-cols-1 gap-8">
+        {/* Domain Task 2: Superhost vs Non-Superhost */}
+        <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md transition-shadow">
+          <div className="mb-4">
+            <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
+              <span className="w-1.5 h-4 bg-sky-500 rounded-full" />
+              2. Superhost vs Non-Superhost Premium
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              So sánh giá và đánh giá giữa Superhost và Regular Host (Dumbbell Chart)
+            </p>
           </div>
-        </div>
+          <div className="min-h-[400px]">
+            <DumbbellChart data={rawData} />
+          </div>
+        </section>
 
-        {/* Placeholder for Domain Task 6 */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 min-h-[400px] flex flex-col">
-          <h2 className="text-xl font-semibold mb-4 text-slate-700">
-            Pricing Dependencies: Beds/Baths/Capacity (Task 6)
-          </h2>
-          <div className="flex-1 bg-slate-50 border border-dashed border-slate-200 rounded-lg flex items-center justify-center text-slate-400">
-            [D3.js Heatmap/Correlation Chart Wrapper Here]
+        {/* Domain Task 5: Price by Room Type & Borough */}
+        <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md transition-shadow">
+          <div className="mb-4">
+            <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
+              <span className="w-1.5 h-4 bg-violet-500 rounded-full" />
+              5. Price by Room Type & Area Popularity
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Mức giá trung bình theo loại phòng và quận (Grouped Bar Chart)
+            </p>
           </div>
-        </div>
-
-        {/* Placeholder for Domain Task 5 */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 min-h-[400px] flex flex-col lg:col-span-2">
-          <h2 className="text-xl font-semibold mb-4 text-slate-700">
-            Price by Room Type & Area Popularity (Task 5)
-          </h2>
-          <div className="flex-1 bg-slate-50 border border-dashed border-slate-200 rounded-lg flex items-center justify-center text-slate-400">
-            [D3.js Grouped Bar/Scatter Chart Wrapper Here]
+          <div className="min-h-[400px]">
+            <RoomTypeBoroughPriceChart data={rawData} />
           </div>
-        </div>
-
-        {/* Task 8 */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 min-h-[400px] flex flex-col lg:col-span-2">
-          <h2 className="text-xl font-semibold mb-4 text-slate-700">
-            Revenue vs Occupancy by District (Task 8)
-          </h2>
-          <div className="flex-1 flex items-center justify-center">
-            <ScatterPlot />
-          </div>
-        </div>
+        </section>
       </div>
     </div>
   );
