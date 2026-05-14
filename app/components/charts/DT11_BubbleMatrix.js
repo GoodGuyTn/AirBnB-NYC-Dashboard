@@ -143,7 +143,7 @@ export default function BubbleMatrix({ data }) {
       .attr('font-size', '12px')
       .attr('font-weight', '600')
       .attr('fill', '#475569')
-      .text('Room Type');
+      .text('Loại phòng');
 
     // Trục X (Boroughs) đặt ở trên đỉnh ma trận cho trực quan
     const xAxis = g.append('g')
@@ -165,7 +165,7 @@ export default function BubbleMatrix({ data }) {
       .attr('font-size', '12px')
       .attr('font-weight', '600')
       .attr('fill', '#475569')
-      .text('Neighbourhood Group');
+      .text('Khu vực (Quận)');
 
     // Nhóm chứa bong bóng
     const bubbles = g.selectAll('.bubble-node')
@@ -323,29 +323,29 @@ export default function BubbleMatrix({ data }) {
         {/* Custom HTML Tooltip */}
         {tooltip.visible && tooltip.content && (
           <div
-            className="absolute z-30 pointer-events-none bg-slate-900 text-white p-3 rounded-xl shadow-xl border border-slate-700 max-w-xs transition-all duration-75"
+            className="absolute z-30 pointer-events-none bg-white text-slate-800 p-3 rounded-xl shadow-xl border border-slate-200 max-w-xs transition-all duration-75"
             style={{
               left: `${Math.min(tooltip.x, (svgRef.current?.parentElement?.clientWidth || 600) - 160)}px`,
               top: `${Math.max(tooltip.y - 15, 10)}px`,
               transform: 'translate(-50%, -100%)',
             }}
           >
-            <div className="text-[10px] font-black uppercase text-amber-400 tracking-wider mb-1 border-b border-slate-700 pb-1 flex justify-between gap-4">
+            <div className="text-[10px] font-black uppercase text-amber-500 tracking-wider mb-1 border-b border-slate-200 pb-1 flex justify-between gap-4">
               <span>{tooltip.content.borough}</span>
-              <span className="text-slate-400">{tooltip.content.room_type}</span>
+              <span className="text-slate-500">{tooltip.content.room_type}</span>
             </div>
             <div className="space-y-1 text-xs">
               <div className="flex justify-between gap-4">
-                <span className="text-slate-400">Số lượng (Size):</span>
-                <span className="font-bold text-white">{tooltip.content.count} listings</span>
+                <span className="text-slate-500">Số lượng (Size):</span>
+                <span className="font-bold text-slate-800">{tooltip.content.count} listings</span>
               </div>
               <div className="flex justify-between gap-4">
-                <span className="text-slate-400">Giá trung bình (Color):</span>
-                <span className="font-bold text-amber-300">${tooltip.content.avgPrice.toFixed(1)}</span>
+                <span className="text-slate-500">Giá trung bình (Color):</span>
+                <span className="font-bold text-amber-500">${tooltip.content.avgPrice.toFixed(1)}</span>
               </div>
-              <div className="flex justify-between gap-4 pt-1 border-t border-slate-800 text-[11px]">
-                <span className="text-slate-500">Khoảng giá:</span>
-                <span className="font-medium text-slate-400">
+              <div className="flex justify-between gap-4 pt-1 border-t border-slate-100 text-[11px]">
+                <span className="text-slate-400">Khoảng giá:</span>
+                <span className="font-medium text-slate-600">
                   ${tooltip.content.minPrice} - ${tooltip.content.maxPrice}
                 </span>
               </div>

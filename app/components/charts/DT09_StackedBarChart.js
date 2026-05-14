@@ -35,11 +35,11 @@ export default function StackedBarChart() {
       .style('font-size', '14px')
       .style('color', '#334155');
 
-    legend.append('span').style('font-weight', '700').text('Instant Book:');
+    legend.append('span').style('font-weight', '700').text('Đặt tức thì:');
 
     const legendItems = [
-      { label: 'True', color: '#FF9500' },
-      { label: 'False', color: '#3B82F6' },
+      { label: 'Có', color: '#FF9500' },
+      { label: 'Không', color: '#3B82F6' },
     ];
 
     const legendItemNodes = new Map();
@@ -69,13 +69,15 @@ export default function StackedBarChart() {
       .append('div')
       .style('position', 'absolute')
       .style('padding', '10px 14px')
-      .style('background', 'rgba(15, 23, 42, 0.94)')
-      .style('color', '#fff')
+      .style('background', '#ffffff')
+      .style('color', '#1f2937')
+      .style('border', '1px solid #e2e8f0')
       .style('border-radius', '8px')
       .style('font-size', '13px')
       .style('pointer-events', 'none')
       .style('opacity', 0)
       .style('z-index', '10')
+      .style('box-shadow', '0 4px 12px rgba(0,0,0,0.1)')
       .style('line-height', '1.5');
 
     const svg = root
@@ -201,15 +203,15 @@ export default function StackedBarChart() {
           .style('cursor', 'pointer')
           .on('mouseenter', (event, d) => {
             const key = d3.select(event.currentTarget.parentNode).datum().key;
-            const label = key === 'true' ? 'True' : 'False';
+            const label = key === 'true' ? 'Có' : 'Không';
             const value = d[1] - d[0];
 
             tooltip
               .style('opacity', 1)
               .html(`
-                <div><strong>Instant Bookable:</strong> ${label}</div>
-                <div><strong>Room Type:</strong> ${d.data.room_type}</div>
-                <div><strong>Avg. Estimated Occupancy L365D:</strong> ${formatOcc(value)}</div>
+                <div style="font-weight:700;margin-bottom:4px;border-bottom:1px solid #e5e7eb;padding-bottom:4px;">${d.data.room_type}</div>
+                <div style="display:flex;justify-content:space-between;gap:16px;margin-top:4px;"><span style="color:#6b7280">Đặt tức thì:</span><span style="font-weight:600;color:${key==='true'?'#d97706':'#2563eb'}">${label}</span></div>
+                <div style="display:flex;justify-content:space-between;gap:16px;margin-top:2px;"><span style="color:#6b7280">TB chiếm dụng (365 ngày):</span><span style="font-weight:600">${formatOcc(value)}</span></div>
               `);
 
             tooltip
@@ -227,7 +229,7 @@ export default function StackedBarChart() {
           .on('click', (event, d) => {
             event.stopPropagation();
             const key = d3.select(event.currentTarget.parentNode).datum().key;
-            const label = key === 'true' ? 'True' : 'False';
+            const label = key === 'true' ? 'Có' : 'Không';
             const value = d[1] - d[0];
 
             setSelection(selectedKey === key ? null : key);
@@ -235,11 +237,10 @@ export default function StackedBarChart() {
             tooltip
               .style('opacity', 1)
               .html(`
-                <div><strong>Instant Bookable:</strong> ${label}</div>
-                <div><strong>Room Type:</strong> ${d.data.room_type}</div>
-                <div><strong>Avg. Estimated Occupancy L365D:</strong> ${formatOcc(value)}</div>
+                <div style="font-weight:700;margin-bottom:4px;border-bottom:1px solid #e5e7eb;padding-bottom:4px;">${d.data.room_type}</div>
+                <div style="display:flex;justify-content:space-between;gap:16px;margin-top:4px;"><span style="color:#6b7280">Đặt tức thì:</span><span style="font-weight:600;color:${key==='true'?'#d97706':'#2563eb'}">${label}</span></div>
+                <div style="display:flex;justify-content:space-between;gap:16px;margin-top:2px;"><span style="color:#6b7280">TB chiếm dụng (365 ngày):</span><span style="font-weight:600">${formatOcc(value)}</span></div>
               `);
-
             tooltip
               .style('left', `${event.offsetX + 16}px`)
               .style('top', `${event.offsetY + 16}px`);
@@ -288,7 +289,7 @@ export default function StackedBarChart() {
           .style('font-size', '14px')
           .style('font-weight', '700')
           .style('fill', '#111827')
-          .text('Room Type');
+          .text('Loại phòng');
 
         svg
           .append('text')
@@ -299,7 +300,7 @@ export default function StackedBarChart() {
           .style('font-size', '14px')
           .style('font-weight', '700')
           .style('fill', '#111827')
-          .text('AVG(Estimated Occupancy L365D)');
+          .text('TB chiếm dụng ước tính (365 ngày)');
 
         updateBarStyles();
         updateLegendStyles();
