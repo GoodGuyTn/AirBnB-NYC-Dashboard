@@ -40,13 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-<<<<<<< HEAD
 # data
 public/data/
-=======
-#csv
-*.csv
-
-#md
-*.md
->>>>>>> origin/duc
