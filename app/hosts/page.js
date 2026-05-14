@@ -30,14 +30,14 @@ export default function HostsPage() {
             Superhost - Host
           </h2>
         </div>
-        
+
         <div className="min-h-[400px]">
           <DumbbellChart data={rawData} />
         </div>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
+
         {/* Placeholder for Domain Task 3 */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 min-h-[400px] flex flex-col opacity-50">
           <h2 className="text-lg font-semibold mb-4 text-slate-700">

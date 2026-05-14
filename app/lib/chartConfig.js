@@ -44,10 +44,10 @@ export const ROOM_TYPES = ['Entire home/apt', 'Private room', 'Shared room', 'Ho
 
 // Color palettes
 export const ROOM_TYPE_COLORS = {
-  'Entire home/apt': '#3b82f6',  // Blue
-  'Private room': '#10b981',      // Green
-  'Shared room': '#f59e0b',       // Amber
-  'Hotel room': '#8b5cf6',        // Purple
+  'Entire home/apt': '#3b82f6', // blue-500
+  'Private room':    '#8b5cf6', // violet-500
+  'Shared room':     '#f59e0b', // amber-500
+  'Hotel room':      '#ef4444', // red-500
 };
 
 export const BOROUGH_COLORS = {
