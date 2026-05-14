@@ -1,5 +1,5 @@
-import HostReputationChart from './components/HostReputationChart';
-import HostProfessionalismChart from './components/HostProfessionalismChart';
+import DT02_HostReputationChart from './components/charts/DT02_HostReputationChart';
+import DT03_HostProfessionalismChart from './components/charts/DT03_HostProfessionalismChart';
 import { fetchHostReputationData, fetchHostProfessionalismData } from './lib/data';
 import styles from './page.module.css';
 
@@ -16,11 +16,15 @@ export default async function Home() {
 
       <main className={styles.main}>
         <section className={styles.chartSection}>
-          <HostReputationChart data={reputationData} />
+          <h2 className={styles.chartTitle}>Phân tích uy tín chủ nhà (Task 2)</h2>
+          <p className={styles.chartDescription}>Scatter plot showing correlation between number of reviews and review ratings</p>
+          <DT02_HostReputationChart data={reputationData} />
         </section>
 
         <section className={styles.chartSection}>
-          <HostProfessionalismChart data={professionalismData} />
+          <h2 className={styles.chartTitle}>Phân tích mức độ chuyên nghiệp của chủ nhà (Task 3)</h2>
+          <p className={styles.chartDescription}>Grouped bar chart showing host response time vs listings count</p>
+          <DT03_HostProfessionalismChart data={professionalismData} />
         </section>
       </main>
 

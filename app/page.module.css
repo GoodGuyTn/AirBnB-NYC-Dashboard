@@ -65,6 +65,19 @@
   margin: 0 0 10px 0;
 }
 
+.chartTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 8px 0 !important;
+}
+
+.chartDescription {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 20px 0 !important;
+}
+
 .chartSection .chart-description {
   font-size: 16px;
   color: var(--text-secondary);
