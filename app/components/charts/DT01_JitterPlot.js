@@ -101,7 +101,7 @@ export default function JitterPlot({ data, title = 'Toàn thành phố' }) {
       .attr('cy', (d) => y(d.rating))
       .attr('r', 3)
       .attr('fill', (d) => blueSaturationScale(d.rating))
-      .attr('opacity', 0.6)
+      .attr('opacity', 0.4)
       .on('mouseover', function (e, d) {
         d3.select(this).attr('r', 7).attr('opacity', 1).attr('stroke', '#0f172a').attr('stroke-width', 1.5);
         tip.style('opacity', 1).html(

@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-export const COLOR_MIN = 3.5;
+export const COLOR_MIN = 0.0;
 export const COLOR_MAX = 5.0;
 
 // Sử dụng interpolateBlues nhưng nén dải nồng độ để điểm 5.0 tối hơn hẳn
