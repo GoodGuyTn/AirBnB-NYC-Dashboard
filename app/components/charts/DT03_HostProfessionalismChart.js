@@ -75,7 +75,7 @@ export default function DT03_HostProfessionalismChart({ data }) {
           .select('body')
           .append('div')
           .attr('class', 'professionalism-tooltip')
-          .style('position', 'fixed')
+          .style('position', 'absolute')
           .style('pointer-events', 'none')
           .style('background', 'white')
           .style('border', '1px solid #e2e8f0')
@@ -114,20 +114,41 @@ export default function DT03_HostProfessionalismChart({ data }) {
       .attr('rx', 3)
       .style('cursor', 'pointer')
       .on('mouseover', function (event, d) {
-        d3.select(this).attr('opacity', 1);
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr('opacity', 1)
+          .attr('fill', '#2563eb');
+          
+        tip.transition().duration(200).style('opacity', 1);
         tip
-          .style('opacity', 1)
           .html(
-            `<strong>${d.host_response_time}</strong><br/>
-             Avg Listings: ${d.avg_listings_count.toFixed(2)}<br/>
-             Total Hosts: ${d.host_count}`
+            `<div style="font-weight: 600; margin-bottom: 4px; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px;">${d.host_response_time}</div>
+             <div style="display: flex; justify-content: space-between; gap: 16px; margin-top: 4px;">
+               <span style="color: #6b7280">Avg Listings:</span> 
+               <span style="font-weight: 600; color: #2563eb">${d.avg_listings_count.toFixed(2)}</span>
+             </div>
+             <div style="display: flex; justify-content: space-between; gap: 16px; margin-top: 2px;">
+               <span style="color: #6b7280">Total Hosts:</span> 
+               <span style="font-weight: 600">${d.host_count.toLocaleString()}</span>
+             </div>`
           )
-          .style('left', event.pageX + 10 + 'px')
-          .style('top', event.pageY - 10 + 'px');
+          .style('left', event.pageX + 15 + 'px')
+          .style('top', event.pageY - 40 + 'px');
+      })
+      .on('mousemove', function (event) {
+        tip
+          .style('left', event.pageX + 15 + 'px')
+          .style('top', event.pageY - 40 + 'px');
       })
       .on('mouseout', function () {
-        d3.select(this).attr('opacity', 0.8);
-        tip.style('opacity', 0);
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .attr('opacity', 0.8)
+          .attr('fill', '#3b82f6');
+          
+        tip.transition().duration(200).style('opacity', 0);
       });
 
     // X Axis
