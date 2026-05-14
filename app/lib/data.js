@@ -54,7 +54,8 @@ export async function fetchHostReputationData() {
   }
 }
 
-// Hàm xử lý dữ liệu cho Phân tích mức độ chuyên nghiệp (Task 2 - Grouped Bar Chart)
+// Hàm xử lý dữ liệu cho Phân tích mức độ chuyên nghiệp (Task 2 - Bar Chart)
+// Phân tích: host_listings_count by host_response_time
 export async function fetchHostProfessionalismData() {
   try {
     const allData = await readCSVFile();
@@ -70,23 +71,34 @@ export async function fetchHostProfessionalismData() {
         groupedData[responseTime] = {
           host_response_time: responseTime,
           totalListings: 0,
-          host_count: 0,
+          hostCount: 0,
+          allListings: [],
         };
       }
 
       groupedData[responseTime].totalListings += listingsCount;
-      groupedData[responseTime].host_count += 1;
+      groupedData[responseTime].hostCount += 1;
+      groupedData[responseTime].allListings.push(listingsCount);
     });
 
     // Transform dữ liệu nhóm
     const professionalismData = Object.values(groupedData)
-      .map((group) => ({
-        host_response_time: group.host_response_time,
-        avg_listings_count: parseFloat(
-          (group.totalListings / group.host_count).toFixed(2)
-        ),
-        host_count: group.host_count,
-      }))
+      .map((group) => {
+        const avg = parseFloat(
+          (group.totalListings / group.hostCount).toFixed(2)
+        );
+        const allListings = group.allListings.sort((a, b) => a - b);
+        const median = allListings[Math.floor(allListings.length / 2)];
+        
+        return {
+          host_response_time: group.host_response_time,
+          avg_listings_count: avg,
+          median_listings_count: median,
+          host_count: group.hostCount,
+          max_listings_count: Math.max(...group.allListings),
+          min_listings_count: Math.min(...group.allListings),
+        };
+      })
       .sort((a, b) => {
         // Sắp xếp theo thứ tự thời gian phản hồi logic
         const order = {

@@ -14,7 +14,7 @@ export default function DT02_HostReputationChart({ data }) {
     if (!container) return;
 
     const containerWidth = container.clientWidth;
-    const margin = { top: 36, right: 20, bottom: 60, left: 70 };
+    const margin = { top: 30, right: 30, bottom: 60, left: 70 };
     const width = containerWidth - margin.left - margin.right;
     const height = 420 - margin.top - margin.bottom;
 
@@ -25,9 +25,7 @@ export default function DT02_HostReputationChart({ data }) {
     const svg = d3
       .select(svgRef.current)
       .attr('width', containerWidth)
-      .attr('height', 420)
-      .style('background-color', '#fff')
-      .style('border-radius', '8px');
+      .attr('height', 420);
 
     const g = svg
       .append('g')
