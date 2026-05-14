@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { name: "Overview & Supply", path: "/" },
+  { name: "Market Overview & Investment", path: "/" },
   { name: "Pricing & Value", path: "/pricing" },
   { name: "Host Performance", path: "/hosts" },
   { name: "Customer Experience", path: "/experience" },
@@ -25,11 +25,10 @@ export default function Sidebar() {
             <Link
               key={item.path}
               href={item.path}
-              className={`block px-4 py-3 rounded-md transition-colors ${
-                isActive
+              className={`block px-4 py-3 rounded-md transition-colors ${isActive
                   ? "bg-blue-600 text-white font-semibold"
                   : "hover:bg-slate-800 text-slate-300"
-              }`}
+                }`}
             >
               {item.name}
             </Link>
