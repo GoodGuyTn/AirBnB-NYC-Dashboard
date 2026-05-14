@@ -45,7 +45,7 @@ export default function JitterPlot({ data, title = 'Toàn thành phố' }) {
     const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
 
     const x = d3.scaleBand().domain(BOROUGHS).range([0, w]).padding(0.05);
-    const y = d3.scaleLinear().domain([1, 5]).range([h, 0]);
+    const y = d3.scaleLinear().domain([0, 5]).range([h, 0]);
 
     // Lane stripes
     g.selectAll('.lane')
