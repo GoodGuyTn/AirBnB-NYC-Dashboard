@@ -14,6 +14,13 @@ function parseRow(d) {
       : parseFloat(d.bathrooms_text?.match(/[\d.]+/)?.[0] || 0),
     accommodates: +d.accommodates || 0,
     price: !d.price ? 0 : parseFloat(d.price.replace(/[$,\s]/g, '')),
+    review_scores_rating: parseFloat(d.review_scores_rating) || null,
+    review_scores_accuracy: parseFloat(d.review_scores_accuracy) || null,
+    review_scores_cleanliness: parseFloat(d.review_scores_cleanliness) || null,
+    review_scores_checkin: parseFloat(d.review_scores_checkin) || null,
+    review_scores_communication: parseFloat(d.review_scores_communication) || null,
+    review_scores_location: parseFloat(d.review_scores_location) || null,
+    review_scores_value: parseFloat(d.review_scores_value) || null,
     rating: parseFloat(d.review_scores_rating) || null,
     superhost: ['t', 'true', 'TRUE', 'True'].includes(String(d.host_is_superhost).trim()),
   };
@@ -22,6 +29,7 @@ function parseRow(d) {
 export function useListingsData() {
   const [allData, setAllData]   = useState([]);   // rows có rating (dashboard 1)
   const [rawData, setRawData]   = useState([]);   // toàn bộ rows có price (dashboard 2)
+  const [scoreData, setScoreData] = useState([]); // rows có ít nhất 1 review score (radar chart)
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
 
@@ -31,6 +39,8 @@ export function useListingsData() {
         const mapped = rows.map(parseRow).filter((d) => d.price > 0);
         setRawData(mapped);
         setAllData(mapped.filter((d) => d.rating !== null && d.rating > 0));
+        // Dữ liệu cho radar chart: tất cả bản ghi có price > 0 (tính trung bình từng trường riêng lẻ)
+        setScoreData(mapped);
         setLoading(false);
       })
       .catch((err) => {
@@ -39,5 +49,5 @@ export function useListingsData() {
       });
   }, []);
 
-  return { allData, rawData, loading, error };
+  return { allData, rawData, scoreData, loading, error };
 }

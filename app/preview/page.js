@@ -1,9 +1,10 @@
 'use client';
 import { useListingsData } from '@/hooks/useListingsData';
 import RoomTypeBoroughPriceChart from '@/components/charts/DT03_RoomTypeBoroughPrice';
+import RadarChart from '@/components/charts/DT01_RadarChart';
 
 export default function PreviewRoomPricePage() {
-  const { rawData, loading, error } = useListingsData();
+  const { rawData, scoreData, loading, error } = useListingsData();
 
   if (loading) {
     return (
@@ -30,8 +31,13 @@ export default function PreviewRoomPricePage() {
         </p>
       </header>
 
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
-        <RoomTypeBoroughPriceChart data={rawData} />
+      <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-8">
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+          <RoomTypeBoroughPriceChart data={rawData} />
+        </div>
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+          <RadarChart data={scoreData} />
+        </div>
       </div>
     </div>
   );
