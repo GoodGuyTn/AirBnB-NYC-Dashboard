@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "NYC Airbnb Dashboard",
-  description: "NYC Airbnb Dashboard created for Data Visualization Course",
+  description: "Phân tích uy tín và mức độ chuyên nghiệp của chủ nhà Airbnb tại New York City",
 };
 
 export default function RootLayout({ children }) {
