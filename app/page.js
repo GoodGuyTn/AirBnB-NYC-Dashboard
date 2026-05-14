@@ -108,7 +108,6 @@ export default function OverviewPage() {
           <div className="flex-1 flex items-center justify-center min-h-[400px]">
             <StackedBarChart />
           </div>
-          </div>
         </div>
       </div>
     </div>
