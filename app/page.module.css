@@ -150,26 +150,26 @@
 
 @media (prefers-color-scheme: dark) {
   .page {
-    --background: #0a0a0a;
-    --foreground: #1a1a1a;
-    --text-primary: #ededed;
-    --text-secondary: #999;
+    --background: #f5f7fa;
+    --foreground: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666;
   }
 
   .footer {
-    background-color: #0f0f0f;
-    border-top-color: #333;
+    background-color: #f9fafb;
+    border-top-color: #e5e7eb;
   }
 
   .chartSection {
-    box-shadow: 0 2px 12px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   }
 
   .chartSection:hover {
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
   }
 
   .chartSection .chart-insights {
-    border-top-color: #333;
+    border-top-color: #e5e7eb;
   }
 }

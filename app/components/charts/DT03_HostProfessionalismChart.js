@@ -9,6 +9,10 @@ export default function DT03_HostProfessionalismChart({ data }) {
   useEffect(() => {
     if (!data || data.length === 0) return;
 
+    const sortedData = [...data].sort(
+      (a, b) => b.avg_listings_count - a.avg_listings_count
+    );
+
     // Container responsive sizing
     const container = svgRef.current?.parentElement;
     if (!container) return;
@@ -34,13 +38,13 @@ export default function DT03_HostProfessionalismChart({ data }) {
     // Scales
     const xScale = d3
       .scaleBand()
-      .domain(data.map((d) => d.host_response_time))
+      .domain(sortedData.map((d) => d.host_response_time))
       .range([0, width])
       .padding(0.2);
 
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(data, (d) => d.avg_listings_count) * 1.15])
+      .domain([0, d3.max(sortedData, (d) => d.avg_listings_count) * 1.15])
       .range([height, 0]);
 
     // Tooltip
@@ -76,7 +80,7 @@ export default function DT03_HostProfessionalismChart({ data }) {
 
     // Add bars for avg_listings_count (single metric - bar chart)
     g.selectAll('.bar')
-      .data(data)
+      .data(sortedData)
       .enter()
       .append('rect')
       .attr('class', 'bar')
@@ -109,12 +113,12 @@ export default function DT03_HostProfessionalismChart({ data }) {
     const xAxis = g
       .append('g')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(xScale).tickFormat(''));
+      .call(d3.axisBottom(xScale));
 
     xAxis
       .selectAll('text')
-      .attr('transform', 'rotate(-45)')
-      .attr('text-anchor', 'end')
+      .attr('transform', 'rotate(0)')
+      .attr('text-anchor', 'middle')
       .style('font-size', '12px')
       .style('fill', '#6b7280');
 

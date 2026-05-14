@@ -5,8 +5,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #171717;
   }
 }
 
@@ -93,19 +93,19 @@ a {
 
 @media (prefers-color-scheme: dark) {
   .chart-container .chart-description {
-    color: #999;
+    color: #666;
   }
 
   .chart-container .chart-insights {
-    background-color: rgba(102, 126, 234, 0.1);
+    background-color: rgba(102, 126, 234, 0.05);
   }
 
   .chart-container .chart-insights li {
-    color: #aaa;
+    color: #555;
   }
 
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
 }
 

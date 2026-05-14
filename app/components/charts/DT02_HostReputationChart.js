@@ -1,10 +1,34 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as d3 from 'd3';
 
 export default function DT02_HostReputationChart({ data }) {
   const svgRef = useRef(null);
+  const [minReviews, setMinReviews] = useState(0);
+  const [ratingRange, setRatingRange] = useState('all');
+
+  const filteredData = useMemo(() => {
+    if (!data || data.length === 0) return [];
+
+    return data.filter((d) => {
+      const rating = d.review_scores_rating || 0;
+      const reviews = d.number_of_reviews || 0;
+
+      const matchReviews = reviews >= minReviews;
+      let matchRating = true;
+
+      if (ratingRange === '4.5-5') {
+        matchRating = rating >= 4.5;
+      } else if (ratingRange === '4-4.5') {
+        matchRating = rating >= 4 && rating < 4.5;
+      } else if (ratingRange === '0-4') {
+        matchRating = rating < 4;
+      }
+
+      return matchReviews && matchRating;
+    });
+  }, [data, minReviews, ratingRange]);
 
   useEffect(() => {
     if (!data || data.length === 0) return;
@@ -31,6 +55,17 @@ export default function DT02_HostReputationChart({ data }) {
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
+    if (filteredData.length === 0) {
+      g.append('text')
+        .attr('x', width / 2)
+        .attr('y', height / 2)
+        .attr('text-anchor', 'middle')
+        .style('fill', '#6b7280')
+        .style('font-size', '14px')
+        .text('Khong co du lieu phu hop voi bo loc');
+      return;
+    }
+
     // Scales - SWAPPED: X = Rating (0-5), Y = Number of Reviews
     const xScale = d3
       .scaleLinear()
@@ -39,7 +74,7 @@ export default function DT02_HostReputationChart({ data }) {
 
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(data, (d) => d.number_of_reviews || 0)])
+      .domain([0, d3.max(filteredData, (d) => d.number_of_reviews || 0)])
       .range([height, 0]);
 
     // Tooltip
@@ -85,7 +120,7 @@ export default function DT02_HostReputationChart({ data }) {
 
     // Draw circles
     g.selectAll('.dot')
-      .data(data)
+      .data(filteredData)
       .enter()
       .append('circle')
       .attr('class', 'dot')
@@ -181,7 +216,76 @@ export default function DT02_HostReputationChart({ data }) {
       .attr('y', 14)
       .style('font-size', '11px')
       .text('Host Data Points');
-  }, [data]);
+  }, [data, filteredData]);
 
-  return <svg ref={svgRef} />;
+  return (
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '14px',
+          flexWrap: 'wrap',
+          marginBottom: '12px',
+        }}
+      >
+        <label style={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>
+          Khoang Rating:{' '}
+          <select
+            value={ratingRange}
+            onChange={(e) => setRatingRange(e.target.value)}
+            style={{
+              marginLeft: '6px',
+              padding: '6px 8px',
+              borderRadius: '6px',
+              border: '1px solid #d1d5db',
+              background: '#fff',
+            }}
+          >
+            <option value="all">Tat ca</option>
+            <option value="4.5-5">4.5 - 5.0</option>
+            <option value="4-4.5">4.0 - 4.5</option>
+            <option value="0-4">Duoi 4.0</option>
+          </select>
+        </label>
+
+        <label style={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>
+          Min Reviews: <strong>{minReviews}</strong>
+        </label>
+        <input
+          type="range"
+          min="0"
+          max="500"
+          step="10"
+          value={minReviews}
+          onChange={(e) => setMinReviews(Number(e.target.value))}
+          style={{ width: '180px' }}
+        />
+
+        <button
+          type="button"
+          onClick={() => {
+            setRatingRange('all');
+            setMinReviews(0);
+          }}
+          style={{
+            padding: '6px 10px',
+            borderRadius: '6px',
+            border: '1px solid #d1d5db',
+            background: '#fff',
+            cursor: 'pointer',
+            color: '#1f2937',
+          }}
+        >
+          Reset
+        </button>
+
+        <span style={{ fontSize: '12px', color: '#6b7280' }}>
+          Hien thi {filteredData.length}/{data?.length || 0} host
+        </span>
+      </div>
+
+      <svg ref={svgRef} />
+    </div>
+  );
 }
