@@ -84,6 +84,7 @@ export default function RadarChart({ data }) {
 
   const { boroughAverages, axes, radius, maxValue, angleSlice } = radarData;
 
+  // Tính điểm trên radar dựa trên giá trị
   const getPointCoordinates = (value, angle) => {
     const normalizedRadius = (value / maxValue) * radius;
     return {
@@ -92,6 +93,7 @@ export default function RadarChart({ data }) {
     };
   };
 
+  // Tạo path cho polygon radar
   const createRadarPath = (values) => {
     const points = values.map((value, i) => {
       const point = getPointCoordinates(value, axes[i].angle);

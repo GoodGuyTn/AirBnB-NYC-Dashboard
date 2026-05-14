@@ -1,7 +1,7 @@
 'use client';
 import { useListingsData } from '@/hooks/useListingsData';
-import RoomTypeBoroughPriceChart from '@/components/charts/DT03_RoomTypeBoroughPrice';
-import RadarChart from '@/components/charts/DT01_RadarChart';
+import RoomTypeBoroughPriceChart from '@/components/charts/DT05_RoomTypeBoroughPrice';
+import RadarChart from '@/components/charts/DT07_RadarChart';
 
 export default function PreviewRoomPricePage() {
   const { rawData, scoreData, loading, error } = useListingsData();
