@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
 import { blueSaturationScale } from "@/lib/chartConfig";
 
@@ -7,9 +7,29 @@ const BOROUGHS = ['Manhattan', 'Brooklyn', 'Queens', 'Bronx', 'Staten Island'];
 
 export default function JitterPlot({ data, title = 'Toàn thành phố' }) {
   const svgRef = useRef(null);
+  
+  // Sử dụng Ref để lưu trữ giá trị jitter cố định theo ID căn hộ
+  // Điều này đảm bảo mỗi căn hộ luôn nằm ở một vị trí X duy nhất trong suốt vòng đời của ứng dụng
+  const persistentJitters = useRef(new Map());
+
+  const jitteredData = useMemo(() => {
+    if (!data) return [];
+    return data
+      .filter((d) => BOROUGHS.includes(d.borough))
+      .map((d) => {
+        // Nếu ID này chưa có giá trị jitter, tạo mới và lưu lại
+        if (!persistentJitters.current.has(d.id)) {
+          persistentJitters.current.set(d.id, Math.random() - 0.5);
+        }
+        return { 
+          ...d, 
+          _jitter: persistentJitters.current.get(d.id) 
+        };
+      });
+  }, [data]);
 
   useEffect(() => {
-    if (!data?.length || !svgRef.current) return;
+    if (!jitteredData?.length || !svgRef.current) return;
 
     const container = svgRef.current.parentElement;
     const width  = container.clientWidth;
@@ -70,33 +90,45 @@ export default function JitterPlot({ data, title = 'Toàn thành phố' }) {
           .style('background', 'white').style('border', '1px solid #e2e8f0')
           .style('border-radius', '8px').style('padding', '8px 12px')
           .style('font-size', '12px').style('color', '#0f172a')
-          .style('box-shadow', '0 4px 12px rgba(0,0,0,0.08)').style('opacity', 0)
+          .style('box-shadow', '0 4px 12px rgba(0,0,0,0.08)').style('opacity', 0).style('z-index', 100)
       : tooltip;
 
     g.selectAll('.dot')
-    .data(data.filter((d) => BOROUGHS.includes(d.borough)))
-    .join('circle')
-    .attr('class', 'dot')
-    .attr('cx', (d) => x(d.borough) + x.bandwidth() / 2 + (Math.random() - 0.5) * jw)
-    .attr('cy', (d) => y(d.rating))
-    .attr('r', 3)
-    .attr('fill', (d) => blueSaturationScale(d.rating)) // ÁP DỤNG SATURATION BLUE
-    .attr('opacity', 0.6)
+      .data(jitteredData)
+      .join('circle')
+      .attr('class', 'dot')
+      .attr('cx', (d) => x(d.borough) + x.bandwidth() / 2 + d._jitter * jw)
+      .attr('cy', (d) => y(d.rating))
+      .attr('r', 3)
+      .attr('fill', (d) => blueSaturationScale(d.rating))
+      .attr('opacity', 0.6)
+      .on('mouseover', function (e, d) {
+        d3.select(this).attr('r', 7).attr('opacity', 1).attr('stroke', '#0f172a').attr('stroke-width', 1.5);
+        tip.style('opacity', 1).html(
+          `<strong>${d.borough}</strong><br/>Rating: <b>${d.rating?.toFixed(2)}</b><br/>Phòng: ${d.bedrooms}PN / ${d.bathrooms}PT`
+        ).style('left', e.clientX + 14 + 'px').style('top', e.clientY - 8 + 'px');
+      })
+      .on('mouseout', function () {
+        d3.select(this).attr('r', 3).attr('opacity', 0.6).attr('stroke', 'none');
+        tip.style('opacity', 0);
+      });
 
     // Y label
     svg.append('text').attr('transform', 'rotate(-90)')
-    .attr('x', -(height / 2)).attr('y', 12)
-    .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#94a3b8')
-    .text('Review Score Rating');
+      .attr('x', -(height / 2)).attr('y', 12)
+      .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#94a3b8')
+      .text('Review Score Rating');
+
     return () => {
-    // Xóa tooltip khi người dùng chuyển trang
-    d3.select('.jitter-tooltip').remove();
+      d3.select('.jitter-tooltip').remove();
     };
-}, [data]);
+  }, [jitteredData]);
 
   return (
     <div className="w-full">
-      <p className="text-xs text-slate-400 mb-2">Phân bổ chi tiết: <span className="font-semibold text-slate-600">{title}</span></p>
+      <p className="text-xs text-slate-400 mb-2 font-medium tracking-tight">
+        Phân bổ chi tiết: <span className="font-semibold text-slate-600">{title}</span>
+      </p>
       <svg ref={svgRef} className="w-full" />
     </div>
   );

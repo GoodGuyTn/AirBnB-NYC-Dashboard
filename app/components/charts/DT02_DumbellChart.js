@@ -38,14 +38,14 @@ export default function DumbbellChart({ data }) {
   return (
     <div className="w-full space-y-6 overflow-x-hidden"> {/* ÉP KHÔNG CHO CUỘN NGANG */}
       {/* Menu điều khiển */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-white/5 pb-4">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-slate-100 pb-4">
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Khu vực</span>
           <div className="flex flex-wrap gap-1">
             {BOROUGHS.map((b) => (
               <button key={b} onClick={() => setSelectedBorough(b)}
                 className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${
-                  selectedBorough === b ? 'bg-sky-500 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                  selectedBorough === b ? 'bg-sky-500 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                 }`}
               >{b}</button>
             ))}
@@ -54,12 +54,12 @@ export default function DumbbellChart({ data }) {
 
         <div className="flex items-center gap-3">
           <span className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Sắp xếp</span>
-          <div className="flex bg-slate-900 p-1 rounded-full border border-white/5">
+          <div className="flex bg-slate-100 p-1 rounded-full border border-slate-200">
             <button onClick={() => setSortBy('price')}
-              className={`px-4 py-1 rounded-full text-[10px] font-bold transition-all ${sortBy === 'price' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}
+              className={`px-4 py-1 rounded-full text-[10px] font-bold transition-all ${sortBy === 'price' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'}`}
             >Giá chênh lệch</button>
             <button onClick={() => setSortBy('rating')}
-              className={`px-4 py-1 rounded-full text-[10px] font-bold transition-all ${sortBy === 'rating' ? 'bg-slate-700 text-white' : 'text-slate-500'}`}
+              className={`px-4 py-1 rounded-full text-[10px] font-bold transition-all ${sortBy === 'rating' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'}`}
             >Rating chênh lệch</button>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function DumbbellChart({ data }) {
       {/* Biểu đồ */}
       <div className="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-          <div className="bg-slate-900/50 p-4 rounded-xl border border-white/5">
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
              <p className="text-xs font-bold text-sky-400 mb-4 uppercase tracking-tighter">● So sánh Giá (USD)</p>
              <DumbbellSVG 
                 data={sortedRollup} 
@@ -76,7 +76,7 @@ export default function DumbbellChart({ data }) {
                 xFormat={d => `$${d.toFixed(0)}`}
              />
           </div>
-          <div className="bg-slate-900/50 p-4 rounded-xl border border-white/5">
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
              <p className="text-xs font-bold text-rose-400 mb-4 uppercase tracking-tighter">● So sánh Rating (1-5)</p>
              <DumbbellSVG 
                 data={sortedRollup} 
@@ -136,21 +136,21 @@ function DumbbellSVG({ data, xValue1, xValue2, xFormat }) {
     rows.append("line")
         .attr("x1", -margin.left).attr("x2", chartWidth + margin.right)
         .attr("y1", d => y(d.name) + y.bandwidth()/2).attr("y2", d => y(d.name) + y.bandwidth()/2)
-        .attr("stroke", "rgba(255,255,255,0.03)").attr("stroke-width", 1);
+        .attr("stroke", "rgba(0,0,0,0.03)").attr("stroke-width", 1);
 
     // Thanh Dumbbell
     rows.append("line")
         .attr("x1", d => x(xValue1(d))).attr("x2", d => x(xValue2(d)))
         .attr("y1", d => y(d.name) + y.bandwidth()/2).attr("y2", d => y(d.name) + y.bandwidth()/2)
-        .attr("stroke", "rgba(255,255,255,0.15)").attr("stroke-width", 4).attr("stroke-linecap", "round");
+        .attr("stroke", "#cbd5e1").attr("stroke-width", 4).attr("stroke-linecap", "round");
 
     rows.append("circle")
         .attr("cx", d => x(xValue1(d))).attr("cy", d => y(d.name) + y.bandwidth()/2)
-        .attr("r", 5).attr("fill", NONSUPERHOST_COLOR).attr("stroke", "#0c0c0e").attr("stroke-width", 1);
+        .attr("r", 5).attr("fill", NONSUPERHOST_COLOR).attr("stroke", "white").attr("stroke-width", 1);
 
     rows.append("circle")
         .attr("cx", d => x(xValue2(d))).attr("cy", d => y(d.name) + y.bandwidth()/2)
-        .attr("r", 5).attr("fill", SUPERHOST_COLOR).attr("stroke", "#0c0c0e").attr("stroke-width", 1);
+        .attr("r", 5).attr("fill", SUPERHOST_COLOR).attr("stroke", "white").attr("stroke-width", 1);
 
     // Con số chênh lệch (Gap) - Giới hạn không cho tràn lề phải
     rows.append("text")
