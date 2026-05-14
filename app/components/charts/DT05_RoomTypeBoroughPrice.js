@@ -1,9 +1,11 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 
 export default function RoomTypeBoroughPriceChart({ data }) {
   const svgRef = useRef(null);
+  const containerRef = useRef(null);
+  const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, borough: '', type: '', value: 0 });
 
   useEffect(() => {
     if (!data?.length || !svgRef.current) return;
@@ -81,6 +83,7 @@ export default function RoomTypeBoroughPriceChart({ data }) {
       .selectAll('rect')
       .data((d) => roomTypes.map((type) => ({ type, borough: d.borough, value: d[type] })))
       .join('rect')
+      .attr('class', 'price-bar')
       .attr('x', (d) => x1(d.type))
       .attr('y', (d) => y(d.value))
       .attr('width', x1.bandwidth())
@@ -88,22 +91,38 @@ export default function RoomTypeBoroughPriceChart({ data }) {
       .attr('fill', (d) => colorScale(d.type))
       .attr('rx', 4)
       .attr('opacity', 0.9)
-      .on('mouseenter', (event, d) => {
-        const tooltip = d3.select('body').select('.room-price-tooltip');
-        tooltip
+      .style('cursor', 'pointer')
+      .style('transition', 'opacity 150ms ease, filter 150ms ease')
+      .on('mouseenter', function(event, d) {
+        // Làm mờ các cột khác
+        d3.selectAll('.price-bar')
+          .filter(b => b.type !== d.type)
+          .style('opacity', 0.3);
+        d3.select(this)
           .style('opacity', 1)
-          .html(`<strong>${d.borough}</strong><br>${d.type}<br>Avg price: $${d.value.toFixed(0)}`)
-          .style('left', `${event.pageX + 16}px`)
-          .style('top', `${event.pageY + 16}px`);
+          .style('filter', 'brightness(1.15)');
+
+        const rect = containerRef.current.getBoundingClientRect();
+        setTooltip({
+          visible: true,
+          x: event.clientX - rect.left + 16,
+          y: event.clientY - rect.top - 60,
+          borough: d.borough,
+          type: d.type,
+          value: d.value,
+        });
       })
-      .on('mousemove', (event) => {
-        d3.select('body')
-          .select('.room-price-tooltip')
-          .style('left', `${event.pageX + 16}px`)
-          .style('top', `${event.pageY + 16}px`);
+      .on('mousemove', function(event) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setTooltip(prev => ({
+          ...prev,
+          x: event.clientX - rect.left + 16,
+          y: event.clientY - rect.top - 60,
+        }));
       })
-      .on('mouseleave', () => {
-        d3.select('body').select('.room-price-tooltip').style('opacity', 0);
+      .on('mouseleave', function() {
+        d3.selectAll('.price-bar').style('opacity', 0.9).style('filter', 'none');
+        setTooltip(prev => ({ ...prev, visible: false }));
       });
 
     g.append('g')
@@ -172,27 +191,32 @@ export default function RoomTypeBoroughPriceChart({ data }) {
         .text(type);
     });
 
-    const tooltip = d3.select('body').select('.room-price-tooltip');
-    if (tooltip.empty()) {
-      d3.select('body')
-        .append('div')
-        .attr('class', 'room-price-tooltip')
-        .style('position', 'fixed')
-        .style('pointer-events', 'none')
-        .style('background', 'white')
-        .style('border', '1px solid #cbd5e1')
-        .style('border-radius', '8px')
-        .style('padding', '10px 12px')
-        .style('font-size', '12px')
-        .style('color', '#0f172a')
-        .style('box-shadow', '0 12px 24px rgba(15, 23, 42, 0.12)')
-        .style('opacity', 0);
-    }
-
-    return () => {
-      d3.select('body').select('.room-price-tooltip').remove();
-    };
   }, [data]);
 
-  return <svg ref={svgRef} className="w-full block" />;
+  return (
+    <div ref={containerRef} className="relative w-full">
+      <svg ref={svgRef} className="w-full block" />
+
+      {tooltip.visible && (
+        <div
+          className="absolute z-30 pointer-events-none bg-white text-slate-800 p-3 rounded-xl shadow-xl border border-slate-200 min-w-[160px] transition-all duration-75"
+          style={{ left: `${tooltip.x}px`, top: `${tooltip.y}px` }}
+        >
+          <div className="text-[10px] font-black uppercase text-blue-600 tracking-wider mb-1 border-b border-slate-200 pb-1">
+            {tooltip.borough}
+          </div>
+          <div className="space-y-1 text-xs">
+            <div className="flex justify-between gap-4">
+              <span className="text-slate-500">Loại phòng:</span>
+              <span className="font-semibold text-slate-700">{tooltip.type}</span>
+            </div>
+            <div className="flex justify-between gap-4">
+              <span className="text-slate-500">Giá trung bình:</span>
+              <span className="font-bold text-emerald-600">${tooltip.value.toFixed(0)}</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
