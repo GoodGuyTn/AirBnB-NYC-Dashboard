@@ -36,3 +36,18 @@ export const SCORE_LABELS = {
   review_scores_location:     'Location',
   review_scores_value:        'Value',
 };
+
+export const ROOM_TYPE_COLORS = {
+  'Entire home/apt': '#3b82f6', // blue-500
+  'Private room':    '#8b5cf6', // violet-500
+  'Shared room':     '#f59e0b', // amber-500
+  'Hotel room':      '#ef4444', // red-500
+};
+
+export const BOROUGHS = [
+  'Manhattan',
+  'Brooklyn',
+  'Queens',
+  'Bronx',
+  'Staten Island',
+];

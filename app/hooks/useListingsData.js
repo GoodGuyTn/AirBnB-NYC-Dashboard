@@ -15,17 +15,19 @@ function parseRow(d) {
     price: !d.price ? 0 : parseFloat(d.price.replace(/[$,\s]/g, '')),
     rating: parseFloat(d.review_scores_rating) || null,
     superhost: ['t', 'true', 'TRUE', 'True'].includes(String(d.host_is_superhost).trim()),
+    room_type: d.room_type || 'Private room',
+    minimum_nights: +d.minimum_nights || 1,
   };
 }
 
 export function useListingsData() {
-  const [allData, setAllData]   = useState([]);   // rows có rating (dashboard 1)
-  const [rawData, setRawData]   = useState([]);   // toàn bộ rows có price (dashboard 2)
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState(null);
+  const [allData, setAllData] = useState([]);   // rows có rating (dashboard 1)
+  const [rawData, setRawData] = useState([]);   // toàn bộ rows có price (dashboard 2)
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    d3.csv('/data/listings.csv')
+    d3.csv('/data/listings_cleaned.csv')
       .then((rows) => {
         const mapped = rows.map(parseRow).filter((d) => d.price > 0);
         setRawData(mapped);
