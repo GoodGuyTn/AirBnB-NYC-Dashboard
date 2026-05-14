@@ -31,22 +31,16 @@ export default function DT02_HostReputationChart({ data }) {
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    // Scales
+    // Scales - SWAPPED: X = Rating (0-5), Y = Number of Reviews
     const xScale = d3
       .scaleLinear()
-      .domain([0, d3.max(data, (d) => d.number_of_reviews || 0)])
+      .domain([0, 5])
       .range([0, width]);
 
     const yScale = d3
       .scaleLinear()
-      .domain([0, 5])
+      .domain([0, d3.max(data, (d) => d.number_of_reviews || 0)])
       .range([height, 0]);
-
-    // Color scale from yellow to red
-    const colorScale = d3
-      .scaleLinear()
-      .domain([0, 3, 5])
-      .range(['#fdd49e', '#fc8d59', '#bd0026']);
 
     // Tooltip
     const tooltip = d3.select('body').select('.reputation-tooltip');
@@ -95,33 +89,33 @@ export default function DT02_HostReputationChart({ data }) {
       .enter()
       .append('circle')
       .attr('class', 'dot')
-      .attr('cx', (d) => xScale(d.number_of_reviews || 0))
-      .attr('cy', (d) => yScale(d.review_scores_rating || 0))
-      .attr('r', 5)
-      .attr('fill', (d) => colorScale(d.review_scores_rating || 0))
-      .attr('opacity', 0.7)
+      .attr('cx', (d) => xScale(d.review_scores_rating || 0))
+      .attr('cy', (d) => yScale(d.number_of_reviews || 0))
+      .attr('r', 4)
+      .attr('fill', '#4b8adb')
+      .attr('opacity', 0.6)
       .attr('stroke', '#fff')
       .attr('stroke-width', 1)
       .on('mouseover', function (event, d) {
         d3.select(this)
-          .attr('r', 8)
-          .attr('opacity', 1)
+          .attr('r', 6)
+          .attr('opacity', 0.9)
           .attr('stroke-width', 2);
 
         tip
           .style('opacity', 1)
           .html(
             `<strong>${d.host_name || 'Unknown'}</strong><br/>
-             Reviews: ${d.number_of_reviews}<br/>
-             Rating: ${d.review_scores_rating?.toFixed(2)}/5`
+             Rating: ${d.review_scores_rating?.toFixed(2)}/5<br/>
+             Reviews: ${d.number_of_reviews}`
           )
           .style('left', event.pageX + 10 + 'px')
           .style('top', event.pageY - 10 + 'px');
       })
       .on('mouseout', function () {
         d3.select(this)
-          .attr('r', 5)
-          .attr('opacity', 0.7)
+          .attr('r', 4)
+          .attr('opacity', 0.6)
           .attr('stroke-width', 1);
 
         tip.style('opacity', 0);
@@ -141,7 +135,7 @@ export default function DT02_HostReputationChart({ data }) {
       .attr('text-anchor', 'middle')
       .style('font-size', '13px')
       .style('font-weight', '600')
-      .text('Số lượng bài đánh giá');
+      .text('Review Scores Rating');
 
     // Y Axis
     const yAxis = g.append('g').call(d3.axisLeft(yScale));
@@ -156,18 +150,18 @@ export default function DT02_HostReputationChart({ data }) {
       .attr('text-anchor', 'middle')
       .style('font-size', '13px')
       .style('font-weight', '600')
-      .text('Điểm xếp hạng (Rating)');
+      .text('Number Of Reviews');
 
     // Legend
     const legend = g
       .append('g')
       .attr('class', 'legend')
-      .attr('transform', `translate(${width - 150}, -25)`);
+      .attr('transform', `translate(${width - 120}, -25)`);
 
     legend
       .append('rect')
-      .attr('width', 140)
-      .attr('height', 50)
+      .attr('width', 110)
+      .attr('height', 30)
       .attr('fill', 'white')
       .attr('stroke', '#e5e7eb')
       .attr('stroke-width', 1)
@@ -176,30 +170,17 @@ export default function DT02_HostReputationChart({ data }) {
     legend
       .append('circle')
       .attr('cx', 10)
-      .attr('cy', 12)
+      .attr('cy', 10)
       .attr('r', 4)
-      .attr('fill', '#fdd49e');
+      .attr('fill', '#4b8adb')
+      .attr('opacity', 0.6);
 
     legend
       .append('text')
       .attr('x', 20)
-      .attr('y', 16)
+      .attr('y', 14)
       .style('font-size', '11px')
-      .text('Rating thấp');
-
-    legend
-      .append('circle')
-      .attr('cx', 10)
-      .attr('cy', 30)
-      .attr('r', 4)
-      .attr('fill', '#bd0026');
-
-    legend
-      .append('text')
-      .attr('x', 20)
-      .attr('y', 34)
-      .style('font-size', '11px')
-      .text('Rating cao');
+      .text('Host Data Points');
   }, [data]);
 
   return <svg ref={svgRef} />;

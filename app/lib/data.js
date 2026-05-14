@@ -44,8 +44,7 @@ export async function fetchHostReputationData() {
         number_of_reviews: parseInt(row.number_of_reviews) || 0,
         review_scores_rating: parseFloat(row.review_scores_rating) || 0,
       }))
-      .sort((a, b) => b.review_scores_rating - a.review_scores_rating)
-      .slice(0, 100); // Giới hạn 100 hosts để biểu đồ dễ đọc
+      .filter((d) => d.review_scores_rating > 0 && d.number_of_reviews >= 0); // Lọc đánh giá hợp lệ
 
     return reputationData;
   } catch (error) {
