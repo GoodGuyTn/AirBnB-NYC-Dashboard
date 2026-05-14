@@ -117,6 +117,7 @@ export default function ScatterPlot() {
             const transform = event.transform;
             const zx = transform.rescaleX(x);
             const zy = transform.rescaleY(y);
+            const showLabels = transform.k >= 2.2;
 
             gridX.call(
               d3
@@ -141,6 +142,11 @@ export default function ScatterPlot() {
             yAxisG.selectAll('text').style('fill', '#111827').style('font-size', '12px');
 
             pointsLayer.selectAll('circle').attr('cx', (d) => zx(d.avgOccupancy)).attr('cy', (d) => zy(d.avgRevenue));
+            pointsLayer
+              .selectAll('text.point-label')
+              .attr('x', (d) => zx(d.avgOccupancy))
+              .attr('y', (d) => zy(d.avgRevenue) + 16)
+              .style('opacity', showLabels ? 1 : 0);
           });
 
         const zoomToPoint = (d) => {
@@ -300,6 +306,22 @@ export default function ScatterPlot() {
             event.stopPropagation();
             zoomToPoint(d);
           });
+
+        pointsLayer
+          .selectAll('text.point-label')
+          .data(data)
+          .join('text')
+          .attr('class', 'point-label')
+          .attr('x', (d) => x(d.avgOccupancy))
+          .attr('y', (d) => y(d.avgRevenue) + 16)
+          .attr('text-anchor', 'middle')
+          .style('fill', '#374151')
+          .style('font-size', '10px')
+          .style('font-weight', '600')
+          .style('pointer-events', 'none')
+          .style('opacity', 0)
+          .style('transition', 'opacity 120ms ease')
+          .text((d) => d.neighbourhood);
       })
       .catch((err) => {
         d3.select(chartRef.current)
