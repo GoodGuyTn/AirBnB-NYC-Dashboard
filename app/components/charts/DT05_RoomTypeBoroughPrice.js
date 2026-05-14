@@ -48,7 +48,7 @@ export default function RoomTypeBoroughPriceChart({ data }) {
     const container = svgRef.current.parentElement;
     const width = Math.max(container.clientWidth, 580);
     const height = 420;
-    const margin = { top: 60, right: 24, bottom: 50, left: 56 };
+    const margin = { top: 60, right: 160, bottom: 50, left: 56 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
@@ -120,7 +120,7 @@ export default function RoomTypeBoroughPriceChart({ data }) {
       .attr('fill', '#475569')
       .attr('font-size', '12px')
       .attr('text-anchor', 'middle')
-      .text('Neighbourhood Group Cleansed');
+      .text('Khu vực (Quận)');
 
     g.append('g')
       .call(d3.axisLeft(y).ticks(5).tickFormat((d) => `$${d}`))
@@ -135,7 +135,7 @@ export default function RoomTypeBoroughPriceChart({ data }) {
       .attr('fill', '#475569')
       .attr('font-size', '12px')
       .attr('text-anchor', 'middle')
-      .text('Average Price (USD)');
+      .text('Giá trung bình (USD)');
 
     g.append('text')
       .attr('x', 0)
@@ -152,22 +152,23 @@ export default function RoomTypeBoroughPriceChart({ data }) {
       .attr('font-size', '12px')
       .text('So sánh giá trung bình theo loại phòng và quận');
 
-    const legend = svg.append('g')
-      .attr('transform', `translate(${width - margin.right - 170}, ${margin.top - 34})`);
-
+    // Legend xếp dọc bên phải SVG
+    const legendX = margin.left + innerWidth + 20;
+    const legendStartY = margin.top;
     roomTypes.forEach((type, index) => {
-      const x = index * 80;
-      legend.append('rect')
-        .attr('x', x)
-        .attr('y', 0)
+      const yPos = legendStartY + index * 22;
+      svg.append('rect')
+        .attr('x', legendX)
+        .attr('y', yPos)
         .attr('width', 12)
         .attr('height', 12)
+        .attr('rx', 2)
         .attr('fill', colorScale(type));
-      legend.append('text')
-        .attr('x', x + 18)
-        .attr('y', 10)
+      svg.append('text')
+        .attr('x', legendX + 18)
+        .attr('y', yPos + 10)
         .attr('fill', '#475569')
-        .attr('font-size', '10px')
+        .attr('font-size', '11px')
         .text(type);
     });
 
