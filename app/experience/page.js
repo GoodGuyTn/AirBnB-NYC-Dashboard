@@ -28,7 +28,7 @@ export default function ExperiencePage() {
         <div className="mb-4">
           <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
             <span className="w-1.5 h-4 bg-blue-500 rounded-full" />
-            1a. Mật độ hạ tầng (Master Treemap)
+            1a. Phân bố cấu hình phòng ngủ và phòng tắm 
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
             Click vào ô để xem phân bổ chi tiết ở biểu đồ bên dưới

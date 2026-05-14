@@ -31,10 +31,10 @@ export default function PricingPage() {
           <div className="mb-4">
             <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
               <span className="w-1.5 h-4 bg-sky-500 rounded-full" />
-              2. Superhost vs Non-Superhost Premium
+              2. Superhost vs Non-Superhost
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              So sánh giá và đánh giá giữa Superhost và Regular Host (Dumbbell Chart)
+              So sánh giá và đánh giá giữa các listing thuộc Superhost và Host thông thường 
             </p>
           </div>
           <div className="min-h-[400px]">

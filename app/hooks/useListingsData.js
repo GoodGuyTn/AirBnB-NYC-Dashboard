@@ -46,7 +46,7 @@ export function useListingsData() {
   const [error, setError]       = useState(null);
 
   useEffect(() => {
-    d3.csv('/data/listings_cleaned.csv')
+    d3.csv('/data/listings.csv')
       .then((rows) => {
         const mapped = rows.map(parseRow).filter((d) => d.price > 0);
         setRawData(mapped);
