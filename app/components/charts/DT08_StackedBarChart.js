@@ -38,8 +38,8 @@ export default function StackedBarChart() {
     legend.append('span').style('font-weight', '700').text('Instant Bookable:');
 
     const legendItems = [
-      { label: 'Có', color: '#FF9500' },
-      { label: 'Không', color: '#3B82F6' },
+      { label: 'True', color: '#FF9500' },
+      { label: 'False', color: '#3B82F6' },
     ];
 
     const legendItemNodes = new Map();
@@ -203,7 +203,7 @@ export default function StackedBarChart() {
           .style('cursor', 'pointer')
           .on('mouseenter', (event, d) => {
             const key = d3.select(event.currentTarget.parentNode).datum().key;
-            const label = key === 'true' ? 'Có' : 'Không';
+            const label = key === 'true' ? 'True' : 'False';
             const value = d[1] - d[0];
 
             tooltip
@@ -229,7 +229,7 @@ export default function StackedBarChart() {
           .on('click', (event, d) => {
             event.stopPropagation();
             const key = d3.select(event.currentTarget.parentNode).datum().key;
-            const label = key === 'true' ? 'Có' : 'Không';
+            const label = key === 'true' ? 'True' : 'False';
             const value = d[1] - d[0];
 
             setSelection(selectedKey === key ? null : key);
