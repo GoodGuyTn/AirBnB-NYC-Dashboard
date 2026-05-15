@@ -19,16 +19,16 @@ export default function RadarChart({ data }) {
     const boroughAverages = {};
     BOROUGHS.forEach((borough) => {
       const boroughData = data.filter((d) => d.borough === borough);
-      
+
       boroughAverages[borough] = SCORE_FIELDS.map((field) => {
         const values = boroughData
           .map((d) => d[field])
           .filter((v) => v !== null && typeof v === 'number' && !Number.isNaN(v) && v > 0);
-        
+
         const avg = values.length ? d3.mean(values) : 0;
-        
+
         console.log(`${borough} - ${field}: ${values.length} records, avg = ${avg.toFixed(4)}`);
-        
+
         return avg;
       });
     });

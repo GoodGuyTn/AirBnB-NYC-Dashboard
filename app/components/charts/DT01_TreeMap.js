@@ -8,7 +8,7 @@ function Tooltip({ tip }) {
   if (!tip) return null;
   const { name, bath, count, avgRating, x, y } = tip;
   const left = Math.min(x + 14, window.innerWidth - 220);
-  const top  = Math.max(y - 8, 8);
+  const top = Math.max(y - 8, 8);
 
   return (
     <div className="pointer-events-none fixed z-50" style={{ left, top, minWidth: 190 }}>
@@ -28,7 +28,7 @@ export default function TreemapChart({ data, onCellClick }) {
   const [selectedBeds, setSelectedBeds] = useState([]);
   const [selectedBaths, setSelectedBaths] = useState([]);
   const [tooltip, setTooltip] = useState(null);
-  
+
   // STATE MỚI: Theo dõi ô đang được chọn để thực hiện Toggle
   const [activeCellKey, setActiveCellKey] = useState(null);
 
@@ -43,7 +43,7 @@ export default function TreemapChart({ data, onCellClick }) {
   useEffect(() => {
     if (options.beds.length > 0 && selectedBeds.length === 0) setSelectedBeds(options.beds.map(String));
     if (options.baths.length > 0 && selectedBaths.length === 0) setSelectedBaths(options.baths.map(String));
-  }, [options]);
+  }, [options, selectedBeds.length, selectedBaths.length]);
 
   // Reset active cell khi filter thay đổi
   useEffect(() => { setActiveCellKey(null); }, [selectedBeds, selectedBaths]);
@@ -91,7 +91,7 @@ export default function TreemapChart({ data, onCellClick }) {
     // LOGIC TOGGLE KHI CLICK
     leaf.on('click', (e, d) => {
       const currentKey = `${d.parent.data.name}-${d.data.name}`;
-      
+
       if (activeCellKey === currentKey) {
         // Nếu nhấn lại ô cũ -> Hủy chọn
         setActiveCellKey(null);
@@ -115,7 +115,7 @@ export default function TreemapChart({ data, onCellClick }) {
       .attr('stroke', d => `${d.parent.data.name}-${d.data.name}` === activeCellKey ? '#000' : 'none')
       .attr('stroke-width', 3);
 
-    leaf.each(function(d) {
+    leaf.each(function (d) {
       const g = d3.select(this); const w = d.x1 - d.x0; const h = d.y1 - d.y0;
       if (w > 65 && h > 35) {
         const text = g.append('text').attr('x', 5).attr('y', 15).attr('font-size', '10px').attr('font-weight', '700').attr('pointer-events', 'none');
@@ -125,7 +125,7 @@ export default function TreemapChart({ data, onCellClick }) {
         }
       }
     });
-  }, [filteredData, activeCellKey]); // Thêm activeCellKey vào dependency để re-render viền
+  }, [filteredData, activeCellKey, onCellClick]); // Thêm activeCellKey vào dependency để re-render viền
 
   const toggleFilter = (val, list, setter) => {
     const s = val.toString();

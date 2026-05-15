@@ -1,13 +1,14 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 
+const ListingsDataContext = createContext(null);
+
 function parseRow(d) {
-  // BƯỚC 1: Khai báo biến tạm để tính toán
   const bedCount = +d.bedrooms || 0;
   const bathCount = d.bathrooms_text?.toLowerCase().includes('half')
-      ? 0.5
-      : parseFloat(d.bathrooms_text?.match(/[\d.]+/)?.[0] || d.bathrooms || 0);
+    ? 0.5
+    : parseFloat(d.bathrooms_text?.match(/[\d.]+/)?.[0] || d.bathrooms || 0);
 
   return {
     id: d.id,
@@ -38,30 +39,41 @@ function parseRow(d) {
   };
 }
 
-export function useListingsData() {
-  const [allData, setAllData]   = useState([]);   // rows có rating (dashboard 1)
-  const [rawData, setRawData]   = useState([]);   // toàn bộ rows có price (dashboard 2)
-  const [scoreData, setScoreData] = useState([]); // rows có ít nhất 1 review score (radar chart)
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState(null);
+export function ListingsDataProvider({ children }) {
+  const [allData, setAllData] = useState([]);
+  const [rawData, setRawData] = useState([]);
+  const [scoreData, setScoreData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     d3.csv('/data/listings.csv')
       .then((rows) => {
-        const mapped = rows.map(parseRow).filter((d) => d.price > 0);
+        const mapped = rows.map(parseRow).filter((item) => item.price > 0);
         setRawData(mapped);
-        // Lọc lấy dữ liệu có đánh giá để vẽ Dashboard 1
-        setAllData(mapped.filter((d) => d.rating !== null && d.rating > 0));
-        // Dữ liệu cho radar chart: tất cả bản ghi có price > 0 (tính trung bình từng trường riêng lẻ)
+        setAllData(mapped.filter((item) => item.rating !== null && item.rating > 0));
         setScoreData(mapped);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("D3 Load Error:", err);
+        console.error('D3 Load Error:', err);
         setError(err);
         setLoading(false);
       });
   }, []);
 
-  return { allData, rawData, scoreData, loading, error };
+  const value = useMemo(
+    () => ({ allData, rawData, scoreData, loading, error }),
+    [allData, rawData, scoreData, loading, error]
+  );
+
+  return <ListingsDataContext.Provider value={value}>{children}</ListingsDataContext.Provider>;
+}
+
+export function useListingsData() {
+  const context = useContext(ListingsDataContext);
+  if (!context) {
+    throw new Error('useListingsData must be used within ListingsDataProvider');
+  }
+  return context;
 }

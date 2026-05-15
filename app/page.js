@@ -1,9 +1,9 @@
 'use client';
 import { useListingsData } from '@/hooks/useListingsData';
-import GroupedViolinPlot from './components/charts/DT10_GroupedViolinPlot';
-import BubbleMatrix from './components/charts/DT11_BubbleMatrix';
-import ScatterPlot from './components/charts/DT08_ScatterPlot';
-import StackedBarChart from './components/charts/DT09_StackedBarChart';
+import GroupedViolinPlot from './components/charts/DT09_GroupedViolinPlot';
+import BubbleMatrix from './components/charts/DT10_BubbleMatrix';
+import ScatterPlot from './components/charts/DT07_ScatterPlot';
+import StackedBarChart from './components/charts/DT08_StackedBarChart';
 
 export default function OverviewPage() {
   const { rawData, loading } = useListingsData();
@@ -36,14 +36,14 @@ export default function OverviewPage() {
         </div>
       </header>
 
-      {/* Task 10 & Task 11 */}
+      {/* Task 9 & Task 10 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Domain Task 10 */}
+        {/* Domain Task 9 */}
         <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col hover:shadow-md transition-shadow">
           <div className="mb-4">
             <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
               <span className="w-1.5 h-4 bg-blue-600 rounded-full" />
-              10. Phân bố thời gian lưu trú tối thiểu
+              9. Phân bố thời gian lưu trú tối thiểu
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               Xu hướng ngắn hạn vs dài hạn theo từng khu vực và loại phòng (Grouped Violin Plot)
@@ -60,12 +60,12 @@ export default function OverviewPage() {
           </div>
         </section>
 
-        {/* Domain Task 11 */}
+        {/* Domain Task 10 */}
         <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col hover:shadow-md transition-shadow">
           <div className="mb-4">
             <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
               <span className="w-1.5 h-4 bg-amber-500 rounded-full" />
-              11. Quy mô nguồn cung & Mức giá thị trường
+              10. Quy mô nguồn cung & Mức giá thị trường
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               Tương quan giữa số lượng Listing và Giá trung bình (Bubble Matrix Chart)
@@ -83,14 +83,14 @@ export default function OverviewPage() {
         </section>
       </div>
 
-      {/* Task 8 & Task 9 */}
+      {/* Task 7 & Task 8 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Domain Task 8 */}
+        {/* Domain Task 7 */}
         <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col hover:shadow-md transition-shadow">
           <div className="mb-4">
             <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
               <span className="w-1.5 h-4 bg-rose-500 rounded-full" />
-              8. Revenue vs Occupancy by District
+              7. Doanh thu so với số người ở theo khu vực
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               Gold Mine vs Trap: Phân tích hiệu quả đầu tư theo khu vực (Scatter Plot)
@@ -101,12 +101,12 @@ export default function OverviewPage() {
           </div>
         </section>
 
-        {/* Domain Task 9 */}
+        {/* Domain Task 8 */}
         <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col hover:shadow-md transition-shadow">
           <div className="mb-4">
             <h2 className="text-base font-black text-slate-800 uppercase tracking-tight flex items-center gap-2.5">
               <span className="w-1.5 h-4 bg-emerald-500 rounded-full" />
-              9. Instant Bookable Impact on Occupancy
+              8. Tác động của "Instant Bookable" đến doanh thu
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
               Instant Book vs Manual Approval (Stacked Bar Chart)

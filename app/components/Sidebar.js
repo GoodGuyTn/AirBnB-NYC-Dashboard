@@ -26,8 +26,8 @@ export default function Sidebar() {
               key={item.path}
               href={item.path}
               className={`block px-4 py-3 rounded-md transition-colors ${isActive
-                  ? "bg-blue-600 text-white font-semibold"
-                  : "hover:bg-slate-800 text-slate-300"
+                ? "bg-blue-600 text-white font-semibold"
+                : "hover:bg-slate-800 text-slate-300"
                 }`}
             >
               {item.name}

@@ -333,7 +333,7 @@ export default function GroupedViolinPlot({ data }) {
           <div
             className="absolute z-30 pointer-events-none bg-white text-slate-800 p-3 rounded-xl shadow-xl border border-slate-200 max-w-xs transition-all duration-75"
             style={{
-              left: `${Math.min(tooltip.x, (svgRef.current?.parentElement?.clientWidth || 600) - 180)}px`,
+              left: `${tooltip.x}px`,
               top: `${Math.max(tooltip.y - 15, 10)}px`,
               transform: 'translate(-50%, -100%)',
             }}
