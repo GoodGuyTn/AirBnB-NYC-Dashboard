@@ -1,0 +1,36 @@
+48: 3. Domain task & task abstraction​
+50: 3.1. Domain task 1​
+52: 3.2. Domain task 2​
+54: 3.3. Domain task 3​
+56: 3.4. Domain task 4​
+58: 3.5. Domain task 5​
+60: 3.6. Domain task 6​
+62: 3.7. Domain task 7​
+64: 3.8. Domain task 8​
+66: 3.9. Domain task 9​
+68: 3.10. Domain task 10​
+70: 3.11. Domain task 11​
+83: Domain Task
+2956: Domain task & task abstraction
+2958: Domain task 1
+2984: Domain task 2
+3006: Domain task 3
+3027: Domain task 4
+3046: Domain task 5
+3066: Domain task 6
+3086: Domain task 7
+3108: Domain task 8 (Đạt)
+3134: Domain task 9 (Đạt)
+3155: Domain task 10
+3180: Domain task 11
+3203: Domain task 1
+3227: Domain task 2
+3252: Domain task 3
+3255: Domain task 4
+3258: Domain task 5
+3261: Domain task 6
+3264: Domain task 7
+3267: Domain task 8 (Đạt)
+3290: Domain task 9 (Đạt)
+3311: Domain task 10
+3340: Domain task 11
