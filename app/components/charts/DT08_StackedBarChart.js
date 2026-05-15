@@ -210,8 +210,8 @@ export default function StackedBarChart() {
               .style('opacity', 1)
               .html(`
                 <div style="font-weight:700;margin-bottom:4px;border-bottom:1px solid #e5e7eb;padding-bottom:4px;">${d.data.room_type}</div>
-                <div style="display:flex;justify-content:space-between;gap:16px;margin-top:4px;"><span style="color:#6b7280">Đặt tức thì:</span><span style="font-weight:600;color:${key === 'true' ? '#d97706' : '#2563eb'}">${label}</span></div>
-                <div style="display:flex;justify-content:space-between;gap:16px;margin-top:2px;"><span style="color:#6b7280">TB chiếm dụng (365 ngày):</span><span style="font-weight:600">${formatOcc(value)}</span></div>
+                <div style="display:flex;justify-content:space-between;gap:16px;margin-top:4px;"><span style="color:#6b7280">Instant Bookable:</span><span style="font-weight:600;color:${key === 'true' ? '#d97706' : '#2563eb'}">${label}</span></div>
+                <div style="display:flex;justify-content:space-between;gap:16px;margin-top:2px;"><span style="color:#6b7280">Avg. Occupancy L365D:</span><span style="font-weight:600">${formatOcc(value)}</span></div>
               `);
 
             tooltip
