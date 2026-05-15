@@ -7,9 +7,9 @@ export default function ScatterPlot() {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    const margin = { top: 24, right: 28, bottom: 70, left: 88 };
+    const margin = { top: 20, right: 24, bottom: 58, left: 78 };
     const outerWidth = 1080;
-    const outerHeight = 620;
+    const outerHeight = 600;
     const width = outerWidth - margin.left - margin.right;
     const height = outerHeight - margin.top - margin.bottom;
 
@@ -338,7 +338,7 @@ export default function ScatterPlot() {
       style={{
         position: 'relative',
         width: '100%',
-        minHeight: '650px',
+        minHeight: '350px',
       }}
     />
   );

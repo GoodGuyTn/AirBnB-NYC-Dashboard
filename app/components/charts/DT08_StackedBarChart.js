@@ -13,9 +13,9 @@ export default function StackedBarChart() {
 
     chartRef.current.innerHTML = '';
 
-    const margin = { top: 40, right: 200, bottom: 80, left: 80 };
+    const margin = { top: 30, right: 160, bottom: 64, left: 72 };
     const outerWidth = 980;
-    const outerHeight = 560;
+    const outerHeight = 470;
     const width = outerWidth - margin.left - margin.right;
     const height = outerHeight - margin.top - margin.bottom;
 
@@ -346,7 +346,7 @@ export default function StackedBarChart() {
       className="w-full"
       style={{
         position: 'relative',
-        minHeight: '560px',
+        minHeight: '350px',
       }}
     />
   );

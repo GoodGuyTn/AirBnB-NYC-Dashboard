@@ -97,7 +97,13 @@ export default function OverviewPage() {
             </p>
           </div>
           <div className="flex-1 min-h-[420px] flex flex-col justify-center">
-            <ScatterPlot />
+            {loading ? (
+              <div className="h-[400px] flex items-center justify-center text-slate-400 font-mono text-sm">
+                Đang dựng biểu đồ Scatter...
+              </div>
+            ) : (
+              <ScatterPlot />
+            )}
           </div>
         </section>
 
@@ -113,7 +119,13 @@ export default function OverviewPage() {
             </p>
           </div>
           <div className="flex-1 min-h-[420px] flex flex-col justify-center">
-            <StackedBarChart />
+            {loading ? (
+              <div className="h-[400px] flex items-center justify-center text-slate-400 font-mono text-sm">
+                Đang dựng biểu đồ Stacked Bar...
+              </div>
+            ) : (
+              <StackedBarChart />
+            )}
           </div>
         </section>
       </div>
